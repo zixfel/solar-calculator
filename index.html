@@ -98,6 +98,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2);
+            transition: all 0.3s ease;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -244,6 +245,105 @@
             gap: 15px;
             margin-bottom: 25px;
         }
+        
+        /* Quick Stats Dashboard */
+        .quick-stats {
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+        }
+        
+        .quick-stats h2 {
+            color: #4ade80;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Stat cards - Giống Summary Cards nhưng KHÔNG có animation */
+        .stat-card {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            padding: 12px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        /* NO animated border (khác với .card) */
+        
+        /* Inner content - Giống .card */
+        .stat-card h4 {
+            font-size: 0.7em;
+            color: #a0aec0;
+            margin-bottom: 6px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4ade80;
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+        }
+        
+        .stat-card .stat-label {
+            font-size: 0.7em;
+            color: #a0aec0;
+            margin-top: 2px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Hover effect - Giống .card nhưng không có animation */
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+        }
+        
+        .stat-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .stat-trend.up {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+        
+        .stat-trend.down {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+        
+        .stat-trend.neutral {
+            background: rgba(156, 163, 175, 0.2);
+            color: #d1d5db;
+        }
 
         .investment-section {
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
@@ -270,13 +370,14 @@
         }
 
         .investment-input-wrapper {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+            background: rgba(45, 55, 72, 0.8);
             padding: 25px;
             border-radius: 15px;
             border: 2px solid rgba(139, 92, 246, 0.3);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .investment-input-wrapper::before {
@@ -310,13 +411,14 @@
             width: 100%;
             padding: 18px 20px;
             font-size: 1.4em;
-            border: 2px solid rgba(139, 92, 246, 0.4);
+            border: 2px solid rgba(74, 222, 128, 0.3);
             border-radius: 12px;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(45, 55, 72, 0.8);
             color: #fff;
             font-weight: 800;
             transition: all 0.3s ease;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);\n        }
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
 
         .investment-input-wrapper input[type="text"]:focus {
             outline: none;
@@ -593,13 +695,14 @@
             width: 100%;
             padding: 6px;
             margin-bottom: 5px;
-            border: 1px solid #4a5568;
+            border: 1px solid rgba(74, 222, 128, 0.3);
             border-radius: 4px;
-            background: #2d3748;
+            background: rgba(45, 55, 72, 0.8);
             color: #fff;
             font-size: 0.8em;
             -webkit-appearance: none;
             -moz-appearance: textfield;
+            transition: all 0.3s ease;
         }
 
         input[type="number"]:focus {
@@ -723,6 +826,16 @@
         .btn-export:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-export-csv {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            color: white;
+        }
+
+        .btn-export-csv:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(20, 184, 166, 0.4);
         }
 
         .btn-import {
@@ -1396,6 +1509,29 @@
                 font-size: 1em;
                 font-weight: 800;
             }
+            
+            /* Quick Stats - 2 cột trên mobile */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 10px 8px;
+            }
+            
+            .stat-card h4 {
+                font-size: 0.65em;
+                margin-bottom: 5px;
+            }
+            
+            .stat-card .stat-value {
+                font-size: 1em;
+            }
+            
+            .stat-card .stat-label {
+                font-size: 0.65em;
+            }
 
             /* Investment section */
             .investment-section {
@@ -1829,10 +1965,82 @@
         <!-- Hidden inputs for backward compatibility -->
         <input type="hidden" id="solarPrice" value="0">
         <input type="hidden" id="vatRate" value="8">
+        
+        <!-- Quick Stats Dashboard -->
+        <div class="quick-stats" id="quickStats" style="display: none;">
+            <h2>
+                <span>📈 Phân Tích Nhanh</span>
+                <button class="toggle-btn" onclick="toggleQuickStats()" id="toggleQuickStatsBtn">🔼 Ẩn</button>
+            </h2>
+            <div class="collapsible-content expanded" id="quickStatsContent">
+                <div class="stats-grid">
+                <!-- NHÓM 1: SO SÁNH THÁNG -->
+                <div class="stat-card">
+                    <h4>🏆 Tháng Tiết Kiệm Nhiều Nhất</h4>
+                    <div class="stat-value" id="statBestMonth">-</div>
+                    <div class="stat-label" id="statBestMonthValue">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>📉 Tháng Tiết Kiệm Ít Nhất</h4>
+                    <div class="stat-value" id="statWorstMonth">-</div>
+                    <div class="stat-label" id="statWorstMonthValue">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>🌤️ Tháng Solar Nhiều Nhất</h4>
+                    <div class="stat-value" id="statBestSolarMonth">-</div>
+                    <div class="stat-label" id="statBestSolarValue">-</div>
+                </div>
+                
+                <!-- NHÓM 2: TỶ LỆ % -->
+                <div class="stat-card">
+                    <h4>⚡ Tỷ Lệ Sử Dụng Solar</h4>
+                    <div class="stat-value" id="statSolarPercent">0%</div>
+                    <div class="stat-label">Solar so với tổng tiêu thụ</div>
+                </div>
+                <div class="stat-card">
+                    <h4>🔌 Tỷ Lệ Sử Dụng Lưới EVN</h4>
+                    <div class="stat-value" id="statGridPercent">0%</div>
+                    <div class="stat-label">EVN so với tổng tiêu thụ</div>
+                </div>
+                <div class="stat-card">
+                    <h4>🔋 Tỷ Lệ Tự Cung Tự Cấp</h4>
+                    <div class="stat-value" id="statSelfSufficiency">0%</div>
+                    <div class="stat-label">Tự sản xuất / Tổng tiêu thụ</div>
+                </div>
+                <div class="stat-card">
+                    <h4>💡 Hiệu Suất Tiết Kiệm</h4>
+                    <div class="stat-value" id="statSavingsPercent">0%</div>
+                    <div class="stat-label">Tiết kiệm vs Không Solar</div>
+                </div>
+                
+                <!-- NHÓM 3: XU HƯỚNG & TRUNG BÌNH -->
+                <div class="stat-card">
+                    <h4>📊 Xu Hướng Gần Đây</h4>
+                    <div class="stat-value" id="statTrend">-</div>
+                    <div class="stat-label" id="statTrendLabel">-</div>
+                </div>
+                <div class="stat-card">
+                    <h4>💰 Trung Bình/Ngày</h4>
+                    <div class="stat-value" id="statAvgSavings">0 ₫</div>
+                    <div class="stat-label">Tiết kiệm TB mỗi ngày</div>
+                </div>
+                
+                <!-- NHÓM 4: THÔNG TIN CHUNG -->
+                <div class="stat-card">
+                    <h4>📅 Số Tháng Có Data</h4>
+                    <div class="stat-value" id="statTotalMonths">0 tháng</div>
+                    <div class="stat-label">Tháng đã nhập dữ liệu</div>
+                </div>
+            </div>
+            </div>
+        </div>
 
         <div class="roi-section" id="roiSection">
-            <h2>💰 Đầu Tư & Phân Tích Hoàn Vốn (ROI)</h2>
-            
+            <h2>
+                <span>💰 Đầu Tư & Phân Tích Hoàn Vốn (ROI)</span>
+                <button class="toggle-btn" onclick="toggleROI()" id="toggleROIBtn">🔼 Ẩn</button>
+            </h2>
+            <div class="collapsible-content expanded" id="roiContent">
             <!-- Investment Input -->
             <div class="investment-config">
                 <div class="investment-input-wrapper">
@@ -1878,6 +2086,7 @@
                     <div class="roi-progress-fill" id="roiProgressFill" style="width: 0%"></div>
                 </div>
             </div>
+            </div>
         </div>
 
         <div class="input-section">
@@ -1907,6 +2116,7 @@
                 <button class="btn-save" onclick="saveSettings()">💾 Lưu</button>
                 <button class="btn-load" onclick="loadSettings()">📂 Tải</button>
                 <button class="btn-export" onclick="exportSettings()">📤 Xuất</button>
+                <button class="btn-export-csv" onclick="exportToCSV()" title="Xuất báo cáo chi tiết dạng CSV (Excel)">📊 CSV</button>
                 <button class="btn-import" onclick="document.getElementById('importFile').click()">📥 Nhập</button>
                 <input type="file" id="importFile" accept=".json" onchange="importSettings(event)" style="display: none;">
                 <button class="btn-reset" onclick="resetData()">🔄 Reset</button>
@@ -2246,6 +2456,38 @@
             }
         }
 
+        // Toggle ROI Section
+        function toggleROI() {
+            const container = document.getElementById('roiContent');
+            const btn = document.getElementById('toggleROIBtn');
+            
+            if (container.classList.contains('expanded')) {
+                container.classList.remove('expanded');
+                container.classList.add('collapsed');
+                btn.textContent = '🔽 Hiện';
+            } else {
+                container.classList.remove('collapsed');
+                container.classList.add('expanded');
+                btn.textContent = '🔼 Ẩn';
+            }
+        }
+
+        // Toggle Quick Stats
+        function toggleQuickStats() {
+            const container = document.getElementById('quickStatsContent');
+            const btn = document.getElementById('toggleQuickStatsBtn');
+            
+            if (container.classList.contains('expanded')) {
+                container.classList.remove('expanded');
+                container.classList.add('collapsed');
+                btn.textContent = '🔽 Hiện';
+            } else {
+                container.classList.remove('collapsed');
+                container.classList.add('expanded');
+                btn.textContent = '🔼 Ẩn';
+            }
+        }
+
         // Bỏ hàm scheduleAutoSave - không còn cần tự động lưu khi thay đổi
 
         // Tạo dữ liệu demo tự động cho tất cả tháng
@@ -2434,6 +2676,115 @@
                 showNotification('❌ Lỗi khi xuất file: ' + e.message, 'error');
             }
         }
+        
+        // ==================== EXPORT TO CSV ====================
+        function exportToCSV() {
+            // Cập nhật cache trước khi export
+            for (let i = 0; i < totalMonths; i++) {
+                const loadEl = document.getElementById(`load${i}`);
+                const gridEl = document.getElementById(`grid${i}`);
+                const backupEl = document.getElementById(`backup${i}`);
+                
+                if (loadEl) monthDataCache[`load${i}`] = loadEl.value;
+                if (gridEl) monthDataCache[`grid${i}`] = gridEl.value;
+                if (backupEl) monthDataCache[`backup${i}`] = backupEl.value;
+            }
+            
+            // Tính toán trước để có dữ liệu
+            calculateSavings();
+            
+            // Tạo CSV content
+            let csvContent = "Báo Cáo Chi Tiết Năng Lượng Mặt Trời\n";
+            csvContent += `Xuất ngày: ${new Date().toLocaleDateString('vi-VN')}\n\n`;
+            
+            // Header
+            csvContent += "Tháng,Điện Load (kWh),Điện Grid EVN (kWh),Backup (kWh),Solar Sản Xuất (kWh),Chi Phí Grid (VNĐ),Chi Phí Solar (VNĐ),Chi Phí Thực Tế (VNĐ),Chi Phí Không Solar (VNĐ),Tiết Kiệm (VNĐ)\n";
+            
+            let totalSavings = 0;
+            let totalLoad = 0;
+            let totalSolar = 0;
+            let totalGrid = 0;
+            let totalCostWithoutSolar = 0;
+            
+            const vatRate = 0.08;
+            
+            // Data rows
+            for (let i = 0; i < totalMonths; i++) {
+                const load = parseFloat(getMonthValue(`load${i}`, '0')) || 0;
+                const grid = parseFloat(getMonthValue(`grid${i}`, '0')) || 0;
+                const backup = parseFloat(getMonthValue(`backup${i}`, '0')) || 0;
+                
+                const solarProduced = load + backup - grid;
+                const gridCost = calculateTieredPrice(grid, vatRate);
+                const costWithoutSolar = calculateTieredPrice(solarProduced, vatRate);
+                const solarCost = 0;
+                const actualCost = gridCost + solarCost;
+                const savings = costWithoutSolar - solarCost;
+                
+                totalSavings += savings;
+                totalLoad += load;
+                totalSolar += solarProduced;
+                totalGrid += grid;
+                totalCostWithoutSolar += costWithoutSolar;
+                
+                csvContent += `${getMonthName(i)},${load},${grid},${backup},${solarProduced.toFixed(2)},${gridCost.toFixed(0)},${solarCost},${actualCost.toFixed(0)},${costWithoutSolar.toFixed(0)},${savings.toFixed(0)}\n`;
+            }
+            
+            // Summary rows
+            csvContent += `\nTổng Cộng,${totalLoad.toFixed(2)},${totalGrid.toFixed(2)},-,${totalSolar.toFixed(2)},-,-,-,${totalCostWithoutSolar.toFixed(0)},${totalSavings.toFixed(0)}\n`;
+            
+            const monthsWithData = totalMonths;
+            const avgSavings = monthsWithData > 0 ? totalSavings / monthsWithData : 0;
+            const avgLoad = monthsWithData > 0 ? totalLoad / monthsWithData : 0;
+            const avgSolar = monthsWithData > 0 ? totalSolar / monthsWithData : 0;
+            const avgGrid = monthsWithData > 0 ? totalGrid / monthsWithData : 0;
+            
+            csvContent += `Trung Bình,${avgLoad.toFixed(2)},${avgGrid.toFixed(2)},-,${avgSolar.toFixed(2)},-,-,-,-,${avgSavings.toFixed(0)}\n`;
+            
+            // ROI info
+            const initialCost = getInitialCostValue();
+            if (initialCost > 0) {
+                const paybackMonths = avgSavings > 0 ? initialCost / avgSavings : 0;
+                const paybackYears = (paybackMonths / 12).toFixed(1);
+                const percentRecovered = (totalSavings / initialCost * 100).toFixed(1);
+                
+                csvContent += `\nPhân Tích ROI\n`;
+                csvContent += `Chi Phí Lắp Đặt (VNĐ),${initialCost}\n`;
+                csvContent += `Đã Tiết Kiệm (VNĐ),${totalSavings.toFixed(0)}\n`;
+                csvContent += `Thời Gian Hoàn Vốn (năm),${paybackYears}\n`;
+                csvContent += `Thời Gian Hoàn Vốn (tháng),${Math.round(paybackMonths)}\n`;
+                csvContent += `% Hoàn Vốn,${percentRecovered}%\n`;
+            }
+            
+            // Quick Stats
+            csvContent += `\nThống Kê Nhanh\n`;
+            const solarPercent = totalLoad > 0 ? ((totalSolar / totalLoad) * 100).toFixed(1) : 0;
+            const gridPercent = totalLoad > 0 ? ((totalGrid / totalLoad) * 100).toFixed(1) : 0;
+            const savingsPercent = totalCostWithoutSolar > 0 ? ((totalSavings / totalCostWithoutSolar) * 100).toFixed(1) : 0;
+            
+            csvContent += `Tỷ Lệ Solar (%),${solarPercent}\n`;
+            csvContent += `Tỷ Lệ Grid EVN (%),${gridPercent}\n`;
+            csvContent += `Hiệu Suất Tiết Kiệm (%),${savingsPercent}\n`;
+            
+            // Download CSV
+            try {
+                const BOM = '\uFEFF'; // UTF-8 BOM for Excel compatibility
+                const dataBlob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `solar-report-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showNotification('📊 Đã xuất báo cáo CSV thành công!', 'success');
+            } catch (e) {
+                showNotification('❌ Lỗi khi xuất CSV: ' + e.message, 'error');
+            }
+        }
+        // ==================== END EXPORT TO CSV ====================
         
         // Tải cài đặt từ localStorage
         function loadSettings() {
@@ -2772,7 +3123,107 @@
 
             // Hiển thị chi tiết
             displayDetails(monthlyDetails);
+            
+            // Tính toán Quick Stats
+            calculateQuickStats(monthlyDetails, totalSolarProduced, totalLoad, totalGrid, totalSavings, totalCostWithoutSolar, monthsWithData);
         }
+        
+        // ==================== QUICK STATS CALCULATION ====================
+        function calculateQuickStats(monthlyDetails, totalSolar, totalLoad, totalGrid, totalSavings, totalCostWithoutSolar, monthsWithData) {
+            // Chỉ hiển thị nếu có dữ liệu
+            if (monthlyDetails.length === 0 || totalLoad === 0) {
+                document.getElementById('quickStats').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('quickStats').style.display = 'block';
+            
+            // 1. Tháng tiết kiệm nhiều nhất và ít nhất
+            let bestMonth = monthlyDetails[0];
+            let worstMonth = monthlyDetails[0];
+            
+            monthlyDetails.forEach(month => {
+                if (month.savings > bestMonth.savings) bestMonth = month;
+                if (month.savings < worstMonth.savings) worstMonth = month;
+            });
+            
+            document.getElementById('statBestMonth').textContent = bestMonth.month;
+            document.getElementById('statBestMonthValue').textContent = formatVND(bestMonth.savings);
+            document.getElementById('statWorstMonth').textContent = worstMonth.month;
+            document.getElementById('statWorstMonthValue').textContent = formatVND(worstMonth.savings);
+            
+            // 2. Tỷ lệ sử dụng Solar vs Grid
+            const solarPercent = totalLoad > 0 ? ((totalSolar / totalLoad) * 100).toFixed(1) : 0;
+            const gridPercent = totalLoad > 0 ? ((totalGrid / totalLoad) * 100).toFixed(1) : 0;
+            
+            document.getElementById('statSolarPercent').textContent = solarPercent + '%';
+            document.getElementById('statGridPercent').textContent = gridPercent + '%';
+            
+            // 3. Hiệu suất tiết kiệm (Tiết kiệm / Chi phí không có Solar)
+            let savingsPercent = 0;
+            if (totalCostWithoutSolar > 0) {
+                savingsPercent = ((totalSavings / totalCostWithoutSolar) * 100);
+                // Đảm bảo không vượt quá 100% (logic case edge)
+                if (savingsPercent > 100) savingsPercent = 100;
+                savingsPercent = savingsPercent.toFixed(1);
+            }
+            document.getElementById('statSavingsPercent').textContent = savingsPercent + '%';
+            
+            // 4. Xu hướng tháng gần đây (so sánh 3 tháng gần nhất với 3 tháng trước đó)
+            if (monthlyDetails.length >= 6) {
+                const recent3 = monthlyDetails.slice(-3);
+                const previous3 = monthlyDetails.slice(-6, -3);
+                
+                const recentAvg = recent3.reduce((sum, m) => sum + m.savings, 0) / 3;
+                const previousAvg = previous3.reduce((sum, m) => sum + m.savings, 0) / 3;
+                
+                let trendPercent = 0;
+                if (previousAvg > 0) {
+                    trendPercent = (((recentAvg - previousAvg) / previousAvg) * 100);
+                    trendPercent = parseFloat(trendPercent.toFixed(1));
+                }
+                
+                if (trendPercent > 5) {
+                    document.getElementById('statTrend').innerHTML = '📈 Tăng';
+                    document.getElementById('statTrendLabel').textContent = `+${trendPercent}% so với 3 tháng trước`;
+                    document.getElementById('statTrend').className = 'stat-value';
+                    document.getElementById('statTrend').style.color = '#6ee7b7';
+                } else if (trendPercent < -5) {
+                    document.getElementById('statTrend').innerHTML = '📉 Giảm';
+                    document.getElementById('statTrendLabel').textContent = `${trendPercent}% so với 3 tháng trước`;
+                    document.getElementById('statTrend').className = 'stat-value';
+                    document.getElementById('statTrend').style.color = '#fca5a5';
+                } else {
+                    document.getElementById('statTrend').innerHTML = '➡️ Ổn định';
+                    document.getElementById('statTrendLabel').textContent = `Thay đổi ${trendPercent}% (không đáng kể)`;
+                    document.getElementById('statTrend').className = 'stat-value';
+                    document.getElementById('statTrend').style.color = '#d1d5db';
+                }
+            } else {
+                document.getElementById('statTrend').textContent = 'Chưa đủ dữ liệu';
+                document.getElementById('statTrendLabel').textContent = 'Cần ít nhất 6 tháng';
+            }
+            
+            // 5. Số tháng có dữ liệu (chỉ đếm tháng có data, không tính tháng 0)
+            document.getElementById('statTotalMonths').textContent = monthsWithData + ' tháng';
+            
+            // 6. Trung bình tiết kiệm/ngày
+            const avgSavingsPerDay = monthsWithData > 0 ? totalSavings / (monthsWithData * 30) : 0;
+            document.getElementById('statAvgSavings').textContent = formatVND(avgSavingsPerDay);
+            
+            // 7. Tháng Solar sản xuất nhiều nhất
+            let bestSolarMonth = monthlyDetails[0];
+            monthlyDetails.forEach(month => {
+                if (month.solarProduced > bestSolarMonth.solarProduced) bestSolarMonth = month;
+            });
+            document.getElementById('statBestSolarMonth').textContent = bestSolarMonth.month;
+            document.getElementById('statBestSolarValue').textContent = formatKWh(bestSolarMonth.solarProduced);
+            
+            // 8. Tỷ lệ tự cung tự cấp (Solar / Load)
+            const selfSufficiency = totalLoad > 0 ? ((totalSolar / totalLoad) * 100).toFixed(1) : 0;
+            document.getElementById('statSelfSufficiency').textContent = selfSufficiency + '%';
+        }
+        // ==================== END QUICK STATS ====================
 
         // Tính toán ROI (Return on Investment)
         // Công thức cơ bản:
