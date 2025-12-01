@@ -2,7 +2,7 @@
 
 Ứng dụng web giúp bạn tính toán và theo dõi hiệu quả tiết kiệm chi phí từ hệ thống năng lượng mặt trời của mình.
 
-**🎨 Phiên bản 3.3.7 - Ultra Compact UI + Simplified Design** (2025-01-30)
+**🎨 Phiên bản 3.3.9 - Ultra Compact UI + EVN Modal** (2025-01-30)
 
 ## ✨ Tính Năng Chính
 
@@ -497,10 +497,37 @@ Dự án này được phát triển cho mục đích cá nhân và học tập.
 
 ---
 
-**Phiên bản**: 3.3.7  
+**Phiên bản**: 3.3.9  
 **Cập nhật lần cuối**: 2025-01-30  
 **Tương thích**: Mọi trình duyệt hiện đại  
 **Tác giả**: Phát triển bởi Genspark AI
+
+## 🆕 Changelog v3.3.9 (2025-01-30) - EVN Calculator Modal
+
+### 💡 UX Improvement:
+✨ **Modal popup** - "Tính Tiền Điện EVN" giờ mở popup thay vì link mới  
+✨ **No context loss** - Ở ngay trang chính, không mất ngữ cảnh  
+✨ **Quick access** - Mở/đóng nhanh với ESC hoặc click ngoài  
+✨ **Dark theme** - Giao diện tối khớp với app chính  
+✨ **Full features** - Đầy đủ tính năng như link cũ  
+
+### 💡 Close Options:
+- Click nút × (top right)
+- Press ESC key
+- Click outside modal (backdrop)
+
+## 🆕 Changelog v3.3.8 (2025-01-30) - Solar Production Chart
+
+### 📊 New Chart Added:
+✨ **Solar Production Chart** - Biểu đồ "Điện Solar Sản Xuất (kWh)"  
+✨ **Same style** - Bar chart giống với savings chart  
+✨ **kWh visualization** - Hiển thị sản lượng điện mặt trời theo tháng  
+✨ **Complete view** - Xem cả tiền tiết kiệm + điện sản xuất  
+✨ **Pattern recognition** - Dễ nhận biết xu hướng mùa vụ  
+
+### 📊 Charts Available:
+- Chart 1: Tiền điện tiết kiệm (VNĐ) - Bright green
+- Chart 2: Điện Solar Sản Xuất (kWh) - Medium green (NEW!)
 
 ## 🆕 Changelog v3.3.7 (2025-01-30) - Simplified Card Colors
 
