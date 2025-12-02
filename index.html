@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tính Toán Tiết Kiệm Điện Mặt Trời</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Ứng dụng tính toán và theo dõi hiệu quả tiết kiệm chi phí từ hệ thống năng lượng mặt trời">
+    <meta name="theme-color" content="#4ade80">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Solar Calculator">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Icons for iOS -->
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -603,6 +621,132 @@
         @keyframes shimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
+        }
+        
+        /* Mobile ROI Compact Layout - Hidden on desktop by default */
+        .roi-compact-input {
+            display: none; /* Hidden on desktop */
+            align-items: center;
+            gap: 10px;
+            background: rgba(45, 55, 72, 0.8);
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .roi-compact-input label {
+            font-size: 0.85em;
+            color: #c4b5fd;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+        
+        .roi-compact-input input {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 1.1em;
+            border: 2px solid rgba(74, 222, 128, 0.3);
+            border-radius: 8px;
+            background: rgba(26, 32, 44, 0.8);
+            color: #fff;
+            font-weight: 700;
+            min-width: 0;
+        }
+        
+        .roi-compact-grid {
+            display: none; /* Hidden on desktop */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .roi-mini-card {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            border-left: 3px solid #8b5cf6;
+        }
+        
+        .roi-mini-card .mini-label {
+            font-size: 0.65em;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .roi-mini-card .mini-value {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .roi-mini-card .mini-note {
+            font-size: 0.6em;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        
+        .roi-mini-card.highlight {
+            border-left-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        
+        .roi-mini-card.highlight .mini-value {
+            color: #4ade80;
+        }
+        
+        .roi-mini-card.profit {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .roi-mini-card.profit .mini-value {
+            color: #10b981;
+        }
+        
+        .roi-mini-progress {
+            display: none; /* Hidden on desktop */
+            background: rgba(30, 41, 59, 0.6);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .roi-mini-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .roi-mini-progress-header .label {
+            font-size: 0.75em;
+            color: #c4b5fd;
+            font-weight: 600;
+        }
+        
+        .roi-mini-progress-header .percent {
+            font-size: 1.1em;
+            font-weight: 800;
+            color: #a78bfa;
+        }
+        
+        .roi-mini-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .roi-mini-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+            border-radius: 10px;
+            transition: width 0.8s ease;
         }
 
         .input-grid {
@@ -1485,10 +1629,10 @@
                 text-align: center;
             }
 
-            /* Summary cards - 3 cột trên mobile, siêu compact */
+            /* Summary cards - 2 cột trên mobile, giống Quick Stats */
             .summary-cards {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
 
             .card {
@@ -1574,66 +1718,54 @@
                 line-height: 1.5;
             }
 
-            /* ROI Section */
+            /* ROI Section - Mobile Compact */
             .roi-section {
-                padding: 20px 15px;
+                padding: 15px 12px;
             }
 
             .roi-section h2 {
-                font-size: 1.3em;
-                flex-direction: column;
-                gap: 8px;
+                font-size: 1.1em;
+                margin-bottom: 15px;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .roi-section h2 span:first-child {
+                font-size: 0.9em;
             }
 
             .roi-section .investment-config {
-                margin-bottom: 20px;
+                margin-bottom: 12px;
             }
-
-            .investment-input-wrapper {
-                padding: 18px;
+            
+            /* Hide default investment wrapper on mobile */
+            .roi-section .investment-input-wrapper {
+                display: none;
             }
-
-            .investment-input-wrapper label {
-                font-size: 0.9em;
+            
+            /* Show compact input on mobile */
+            .roi-compact-input {
+                display: flex;
             }
-
-            .investment-input-wrapper input[type="text"] {
-                font-size: 1.3em;
-                padding: 15px;
+            
+            /* Hide default ROI cards on mobile */
+            .roi-section .roi-cards {
+                display: none;
             }
-
-            .roi-cards {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
+            
+            /* Show compact grid on mobile */
+            .roi-compact-grid {
+                display: grid;
             }
-
-            .roi-card {
-                padding: 10px 8px;
+            
+            /* Hide default progress on mobile */
+            .roi-section .roi-progress {
+                display: none;
             }
-
-            .roi-card h4 {
-                font-size: 0.65em;
-                line-height: 1.1;
-            }
-
-            .roi-card .roi-value {
-                font-size: 0.95em;
-            }
-
-            .roi-progress {
-                padding: 15px;
-            }
-
-            .roi-progress-label {
-                font-size: 0.9em;
-            }
-
-            .roi-progress-percentage {
-                font-size: 1.2em;
-            }
-
-            .roi-progress-bar {
-                height: 25px;
+            
+            /* Show compact progress on mobile */
+            .roi-mini-progress {
+                display: block;
             }
 
             /* Input section */
@@ -1800,8 +1932,8 @@
             }
 
             .summary-cards {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
             }
 
             .card {
@@ -1838,13 +1970,9 @@
                 font-size: 0.8em;
             }
 
-            .roi-cards {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-            }
-
-            .roi-card {
-                padding: 8px 6px;
+            /* ROI compact stays same for extra small */
+            .roi-compact-input input {
+                font-size: 16px; /* Prevent iOS zoom */
             }
 
             .details-row {
@@ -2037,20 +2165,26 @@
 
         <div class="roi-section" id="roiSection">
             <h2>
-                <span>💰 Đầu Tư & Phân Tích Hoàn Vốn (ROI)</span>
+                <span>💰 Đầu Tư & ROI</span>
                 <button class="toggle-btn" onclick="toggleROI()" id="toggleROIBtn">🔼 Ẩn</button>
             </h2>
             <div class="collapsible-content expanded" id="roiContent">
-            <!-- Investment Input -->
+            <!-- Investment Input - Desktop -->
             <div class="investment-config">
                 <div class="investment-input-wrapper">
                     <label>Chi phí lắp đặt hệ thống (VNĐ)</label>
                     <input type="text" id="initialCost" value="0" placeholder="Ví dụ: 150,000,000">
                     <span class="tooltip">Nhập tổng chi phí đầu tư ban đầu để tính toán ROI (hoàn vốn)</span>
                 </div>
+                
+                <!-- Mobile Compact Input -->
+                <div class="roi-compact-input" id="roiCompactInput">
+                    <label>💰 Chi phí:</label>
+                    <input type="text" id="initialCostMobile" value="0" placeholder="150,000,000">
+                </div>
             </div>
 
-            <!-- ROI Cards -->
+            <!-- ROI Cards - Desktop -->
             <div class="roi-cards">
                 <div class="roi-card">
                     <h4>💵 Chi Phí Lắp Đặt</h4>
@@ -2077,6 +2211,47 @@
                     <div class="roi-unit" id="roiTimeNote"></div>
                 </div>
             </div>
+            
+            <!-- Mobile Compact Grid -->
+            <div class="roi-compact-grid" id="roiCompactGrid">
+                <div class="roi-mini-card">
+                    <div class="mini-label">💵 Đầu tư</div>
+                    <div class="mini-value" id="roiMiniCost">0 ₫</div>
+                </div>
+                <div class="roi-mini-card">
+                    <div class="mini-label">💰 Đã tiết kiệm</div>
+                    <div class="mini-value" id="roiMiniSaved">0 ₫</div>
+                    <div class="mini-note" id="roiMiniSavedNote"></div>
+                </div>
+                <div class="roi-mini-card">
+                    <div class="mini-label">📉 Còn lại</div>
+                    <div class="mini-value" id="roiMiniRemaining">0 ₫</div>
+                    <div class="mini-note" id="roiMiniRemainingNote"></div>
+                </div>
+                <div class="roi-mini-card">
+                    <div class="mini-label">⏱️ Hoàn vốn</div>
+                    <div class="mini-value" id="roiMiniTime">0 năm</div>
+                    <div class="mini-note" id="roiMiniTimeNote"></div>
+                </div>
+                <div class="roi-mini-card highlight" id="roiMiniProfitCard" style="display: none; grid-column: span 2;">
+                    <div class="mini-label">🎉 Đã có lời!</div>
+                    <div class="mini-value" id="roiMiniProfit">0 ₫</div>
+                    <div class="mini-note" id="roiMiniProfitNote"></div>
+                </div>
+            </div>
+            
+            <!-- Mobile Mini Progress -->
+            <div class="roi-mini-progress" id="roiMiniProgress">
+                <div class="roi-mini-progress-header">
+                    <span class="label">📊 Tiến độ hoàn vốn</span>
+                    <span class="percent" id="roiMiniProgressText">0%</span>
+                </div>
+                <div class="roi-mini-bar">
+                    <div class="roi-mini-bar-fill" id="roiMiniProgressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Desktop Progress -->
             <div class="roi-progress">
                 <div class="roi-progress-label">
                     <span>📊 Tiến Độ Hoàn Vốn</span>
@@ -2196,38 +2371,49 @@
             return str.replace(/,/g, '');
         }
 
-        // Xử lý input chi phí lắp đặt
+        // Xử lý input chi phí lắp đặt (cả desktop và mobile)
         function setupInitialCostInput() {
-            const input = document.getElementById('initialCost');
+            const desktopInput = document.getElementById('initialCost');
+            const mobileInput = document.getElementById('initialCostMobile');
             
-            // Khi người dùng nhập
-            input.addEventListener('input', function(e) {
+            // Hàm xử lý format chung
+            function handleInput(e, syncTarget) {
                 let value = unformatNumber(e.target.value);
-                
-                // Chỉ cho phép số
                 value = value.replace(/[^0-9]/g, '');
                 
-                // Format với dấu phẩy
                 if (value) {
                     e.target.value = formatNumber(value);
+                    if (syncTarget) syncTarget.value = formatNumber(value);
                 } else {
                     e.target.value = '';
+                    if (syncTarget) syncTarget.value = '';
                 }
-            });
+            }
             
-            // Khi focus vào (xóa 0 nếu có)
-            input.addEventListener('focus', function(e) {
+            function handleFocus(e) {
                 if (e.target.value === '0') {
                     e.target.value = '';
                 }
-            });
+            }
             
-            // Khi blur (rời khỏi input)
-            input.addEventListener('blur', function(e) {
+            function handleBlur(e, syncTarget) {
                 if (e.target.value === '') {
                     e.target.value = '0';
+                    if (syncTarget) syncTarget.value = '0';
                 }
-            });
+            }
+            
+            // Desktop input events
+            desktopInput.addEventListener('input', (e) => handleInput(e, mobileInput));
+            desktopInput.addEventListener('focus', handleFocus);
+            desktopInput.addEventListener('blur', (e) => handleBlur(e, mobileInput));
+            
+            // Mobile input events
+            if (mobileInput) {
+                mobileInput.addEventListener('input', (e) => handleInput(e, desktopInput));
+                mobileInput.addEventListener('focus', handleFocus);
+                mobileInput.addEventListener('blur', (e) => handleBlur(e, desktopInput));
+            }
         }
 
         // Lấy giá trị thực của initialCost (không có dấu phẩy)
@@ -2236,14 +2422,14 @@
             return parseFloat(unformatNumber(input.value)) || 0;
         }
 
-        // Set giá trị cho initialCost (tự động format)
+        // Set giá trị cho initialCost (tự động format) - cả desktop và mobile
         function setInitialCostValue(value) {
-            const input = document.getElementById('initialCost');
-            if (value > 0) {
-                input.value = formatNumber(value.toString());
-            } else {
-                input.value = '0';
-            }
+            const desktopInput = document.getElementById('initialCost');
+            const mobileInput = document.getElementById('initialCostMobile');
+            const formattedValue = value > 0 ? formatNumber(value.toString()) : '0';
+            
+            desktopInput.value = formattedValue;
+            if (mobileInput) mobileInput.value = formattedValue;
         }
 
         // Dữ liệu demo
@@ -3355,15 +3541,70 @@
             progressText.textContent = percentText;
             
             // Đổi màu thanh progress dựa trên %
+            let progressColor = 'linear-gradient(90deg, #ef4444, #f87171, #fca5a5)';
             if (percentRecovered >= 100) {
-                progressFill.style.background = 'linear-gradient(90deg, #10b981, #34d399, #6ee7b7)';
+                progressColor = 'linear-gradient(90deg, #10b981, #34d399, #6ee7b7)';
             } else if (percentRecovered >= 75) {
-                progressFill.style.background = 'linear-gradient(90deg, #8b5cf6, #a78bfa, #c4b5fd)';
+                progressColor = 'linear-gradient(90deg, #8b5cf6, #a78bfa, #c4b5fd)';
             } else if (percentRecovered >= 50) {
-                progressFill.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d)';
-            } else {
-                progressFill.style.background = 'linear-gradient(90deg, #ef4444, #f87171, #fca5a5)';
+                progressColor = 'linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d)';
             }
+            progressFill.style.background = progressColor;
+            
+            // ========== MOBILE COMPACT ROI UPDATE ==========
+            // Cập nhật input mobile (sync với desktop)
+            const mobileInput = document.getElementById('initialCostMobile');
+            if (mobileInput) {
+                mobileInput.value = formatNumber(initialCost.toString());
+            }
+            
+            // Cập nhật các giá trị mini
+            document.getElementById('roiMiniCost').textContent = formatVND(initialCost);
+            document.getElementById('roiMiniSaved').textContent = formatVND(savedAmount);
+            document.getElementById('roiMiniSavedNote').textContent = dataNote;
+            
+            if (remainingAmount > 0) {
+                document.getElementById('roiMiniRemaining').textContent = formatVND(remainingAmount);
+                const monthsNeeded = Math.ceil(remainingAmount / avgMonthlySavings);
+                const yearsNeeded = (monthsNeeded / 12).toFixed(1);
+                if (monthsNeeded > 12) {
+                    document.getElementById('roiMiniRemainingNote').textContent = `~${yearsNeeded} năm nữa`;
+                } else {
+                    document.getElementById('roiMiniRemainingNote').textContent = `${monthsNeeded} tháng nữa`;
+                }
+                document.getElementById('roiMiniProfitCard').style.display = 'none';
+            } else {
+                document.getElementById('roiMiniRemaining').textContent = '0 ₫';
+                document.getElementById('roiMiniRemainingNote').textContent = '✅ Done!';
+                
+                // Hiển thị tiền lời trên mobile
+                const profit = savedAmount - initialCost;
+                document.getElementById('roiMiniProfit').textContent = formatVND(profit);
+                const profitMonths = Math.floor(profit / avgMonthlySavings);
+                const profitYears = (profitMonths / 12).toFixed(1);
+                document.getElementById('roiMiniProfitNote').textContent = profitMonths > 12 ? `Sau ${profitYears} năm` : `Sau ${profitMonths} tháng`;
+                document.getElementById('roiMiniProfitCard').style.display = 'block';
+            }
+            
+            // Thời gian hoàn vốn mobile
+            if (paybackMonths > 0) {
+                if (paybackMonths <= 12) {
+                    document.getElementById('roiMiniTime').textContent = `${Math.round(paybackMonths)} tháng`;
+                    document.getElementById('roiMiniTimeNote').textContent = '';
+                } else {
+                    const years = (paybackMonths / 12).toFixed(1);
+                    document.getElementById('roiMiniTime').textContent = `${years} năm`;
+                    document.getElementById('roiMiniTimeNote').textContent = `≈ ${Math.round(paybackMonths)} tháng`;
+                }
+            } else {
+                document.getElementById('roiMiniTime').textContent = '∞';
+                document.getElementById('roiMiniTimeNote').textContent = '';
+            }
+            
+            // Mini progress bar
+            document.getElementById('roiMiniProgressFill').style.width = `${percentRecovered}%`;
+            document.getElementById('roiMiniProgressText').textContent = percentText;
+            document.getElementById('roiMiniProgressFill').style.background = progressColor;
         }
 
         // Vẽ biểu đồ tiết kiệm
@@ -3996,6 +4237,60 @@
                     this.select();
                 });
             }
+        });
+    </script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registered successfully:', registration.scope);
+                        
+                        // Check for updates periodically
+                        setInterval(() => {
+                            registration.update();
+                        }, 60000); // Check every minute
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            });
+            
+            // Handle Service Worker updates
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
+        }
+        
+        // PWA Install prompt (optional - for "Add to Home Screen")
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            console.log('💡 PWA can be installed!');
+            
+            // Optionally, show a custom install button
+            // You can add a button in your UI and trigger:
+            // deferredPrompt.prompt();
+            // deferredPrompt.userChoice.then((choiceResult) => {
+            //   if (choiceResult.outcome === 'accepted') {
+            //     console.log('User accepted the install prompt');
+            //   }
+            // });
+        });
+        
+        // Detect if app is installed
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('✅ App installed successfully!');
         });
     </script>
 </body>

@@ -2,24 +2,40 @@
 
 Ứng dụng web giúp bạn tính toán và theo dõi hiệu quả tiết kiệm chi phí từ hệ thống năng lượng mặt trời của mình.
 
-**🎨 Phiên bản 3.4.0 - UX Excellence Package** (2025-01-30)
+**🎨 Phiên bản 3.4.5 - Mobile ROI Compact** (2025-12-02)
 
-## 🎉 TÍNH NĂNG MỚI v3.4.0
+## 🎉 TÍNH NĂNG MỚI v3.4.5
 
-### 🌓 Dark/Light Mode Toggle
-- **Chuyển đổi theme linh hoạt**: Nút 🌙/☀️ ở góc trên bên phải
-- **Tự động lưu preference**: Theme được nhớ cho lần truy cập sau
-- **Smooth animation**: Chuyển đổi mượt mà trong 0.3s
-- **Tối ưu**: Light mode cho ban ngày, Dark mode cho ban đêm
+### 📱 Mobile ROI Compact Layout (v3.4.5 - 2025-12-02)
+- **Phần Đầu tư & ROI trên mobile được tối ưu hoàn toàn**:
+  - **Tiêu đề ngắn gọn**: "💰 Đầu Tư & ROI" thay vì dài dòng
+  - **Input 1 dòng compact**: `💰 Chi phí: [input]` - tiết kiệm không gian
+  - **Mini Cards 2x2**: 4 cards gọn gàng thay vì 5 cards rối mắt
+    - 💵 Đầu tư | 💰 Đã tiết kiệm
+    - 📉 Còn lại | ⏱️ Hoàn vốn
+  - **Progress bar nhỏ gọn**: Giảm chiều cao 30px → 20px
+  - **Card "Đã có lời"**: Chỉ hiện khi hoàn vốn xong, màu xanh lá nổi bật
+- **Đồng bộ 2 chiều**: Desktop ↔ Mobile input đồng bộ real-time
+- **Tiết kiệm ~30% không gian màn hình** so với phiên bản trước
 
-### 📈 Quick Stats Dashboard
-- **6 chỉ số phân tích nhanh**:
+### 📱 Mobile UI Optimization (v3.4.4 - 2025-12-01)
+- **Layout đồng nhất trên mobile**: Summary Cards và Quick Stats đều hiển thị **2 cột** (thay vì 3 cột)
+- **Tăng độ dễ đọc**: Gap giữa các card tăng từ 8px → 10px
+- **UX tốt hơn**: Giao diện gọn gàng, không bị chen chúc, dễ xem trên màn hình nhỏ
+- **Responsive tối ưu**: Hoạt động tốt trên mọi kích thước màn hình (< 400px, 400px-768px, > 768px)
+
+### 📈 Quick Stats Dashboard (v3.4.0 - v3.4.3)
+- **10 chỉ số phân tích nhanh**:
   - 🏆 Tháng tiết kiệm nhiều nhất/ít nhất
   - ⚡ Tỷ lệ sử dụng Solar vs Grid EVN
   - 💡 Hiệu suất tiết kiệm (%)
   - 📊 Xu hướng tháng gần đây (Tăng/Giảm/Ổn định)
-- **Tự động hiển thị**: Sau khi nhấn "🔍 Tính"
-- **Responsive**: 3 columns (desktop) → 1 column (mobile)
+  - 🌤️ Tháng Solar sản xuất nhiều nhất
+  - 🔋 Tỷ lệ tự cung tự cấp (%)
+  - 📅 Số tháng có dữ liệu
+  - 💰 Trung bình tiết kiệm/ngày
+- **Nút Ẩn/Hiện**: Thu gọn hoặc mở rộng phần phân tích
+- **Responsive**: 5 columns (desktop) → 2 columns (mobile)
 
 ### 📊 Export to CSV (Excel Compatible)
 - **Nút mới "📊 CSV"**: Xuất báo cáo chi tiết dạng CSV
