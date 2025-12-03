@@ -2340,6 +2340,7 @@
         let autoSaveTimeout = null;
         let totalMonths = 12; // Số tháng hiện tại, có thể thay đổi
         let startYear = new Date().getFullYear(); // Năm bắt đầu
+        let startMonth = 1; // Tháng bắt đầu (1-12)
         
         // Pagination for input
         let currentPage = 1;
@@ -2352,8 +2353,11 @@
 
         // Tạo tên tháng động
         function getMonthName(index) {
-            const monthInYear = (index % 12) + 1;
-            const year = startYear + Math.floor(index / 12);
+            // Tính tháng thực tế dựa trên startMonth
+            const totalMonthsFromStart = startMonth - 1 + index;
+            const monthInYear = (totalMonthsFromStart % 12) + 1;
+            const yearOffset = Math.floor(totalMonthsFromStart / 12);
+            const year = startYear + yearOffset;
             return `Tháng ${monthInYear}/${year}`;
         }
 
@@ -2493,19 +2497,29 @@
                 const monthDiv = document.createElement('div');
                 monthDiv.className = 'month-input';
                 
-                // Lấy giá trị đã lưu nếu có
-                const savedValues = savedData[i] || { load: '0', grid: '0', backup: '0' };
+                // Lấy giá trị theo thứ tự ưu tiên: savedData > monthDataCache > default
+                let loadVal = '0', gridVal = '0', backupVal = '0';
+                
+                if (savedData[i]) {
+                    loadVal = savedData[i].load;
+                    gridVal = savedData[i].grid;
+                    backupVal = savedData[i].backup;
+                } else if (monthDataCache[`load${i}`] !== undefined) {
+                    loadVal = monthDataCache[`load${i}`];
+                    gridVal = monthDataCache[`grid${i}`] || '0';
+                    backupVal = monthDataCache[`backup${i}`] || '0';
+                }
                 
                 monthDiv.innerHTML = `
                     <h4>${getMonthName(i)}</h4>
                     <label>🔌 Load (kWh)</label>
-                    <input type="number" id="load${i}" value="${savedValues.load}" min="0" step="0.1" placeholder="0">
+                    <input type="number" id="load${i}" value="${loadVal}" min="0" step="0.1" placeholder="0">
                     
                     <label>⚡ Grid EVN (kWh)</label>
-                    <input type="number" id="grid${i}" value="${savedValues.grid}" min="0" step="0.1" placeholder="0">
+                    <input type="number" id="grid${i}" value="${gridVal}" min="0" step="0.1" placeholder="0">
                     
                     <label>🔋 Backup (kWh)</label>
-                    <input type="number" id="backup${i}" value="${savedValues.backup}" min="0" step="0.1" placeholder="0">
+                    <input type="number" id="backup${i}" value="${backupVal}" min="0" step="0.1" placeholder="0">
                 `;
                 container.appendChild(monthDiv);
             }
@@ -2778,10 +2792,11 @@
                 initialCost: getInitialCostValue().toString(),
                 totalMonths: totalMonths,
                 startYear: startYear,
+                startMonth: startMonth,
                 currentPage: currentPage,
                 monthlyData: [],
                 savedAt: new Date().toISOString(),
-                version: '3.2'
+                version: '3.3'
             };
 
             for (let i = 0; i < totalMonths; i++) {
@@ -2989,12 +3004,17 @@
             try {
                 const settings = JSON.parse(savedSettings);
                 
-                // Cập nhật số tháng và năm nếu có
+                // Cập nhật số tháng, năm và tháng bắt đầu nếu có
                 if (settings.totalMonths) {
                     totalMonths = settings.totalMonths;
                 }
                 if (settings.startYear) {
                     startYear = settings.startYear;
+                }
+                if (settings.startMonth) {
+                    startMonth = settings.startMonth;
+                } else {
+                    startMonth = 1; // Default to January if not saved
                 }
                 if (settings.currentPage) {
                     currentPage = settings.currentPage;
@@ -4337,6 +4357,9 @@
                         <button class="evn-btn-calculate" onclick="fetchLumentreeData()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                             🔄 Lấy Dữ Liệu
                         </button>
+                        <p style="margin: 10px 0 0 0; font-size: 0.8em; color: #9ca3af; text-align: center;">
+                            💡 <em>Nếu không lấy được, hãy thử lại 4-5 lần hoặc chuyển sang tab <strong style="color: #f59e0b;">📋 Thủ Công</strong></em>
+                        </p>
                     </div>
                 </div>
                 
@@ -4442,45 +4465,58 @@
                 // Sử dụng CORS proxy để bypass CORS restriction
                 const targetUrl = `https://lumentree.net/api/monthly/${deviceId}`;
                 
-                // Thử nhiều proxy khác nhau (theo thứ tự ưu tiên)
+                // Thử nhiều proxy khác nhau (theo thứ tự ưu tiên - nhanh nhất trước)
                 const proxies = [
+                    { url: `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`, name: 'codetabs' },
                     { url: `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`, name: 'corsproxy.io' },
-                    { url: `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`, name: 'allorigins', isWrapped: true },
-                    { url: `https://thingproxy.freeboard.io/fetch/${targetUrl}`, name: 'thingproxy' }
+                    { url: `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`, name: 'allorigins-raw' },
+                    { url: `https://proxy.cors.sh/${targetUrl}`, name: 'cors.sh' },
+                    { url: `https://crossorigin.me/${targetUrl}`, name: 'crossorigin.me' }
                 ];
                 
                 let data = null;
                 let lastError = null;
                 
-                for (const proxy of proxies) {
-                    try {
-                        console.log(`Trying proxy: ${proxy.name}`);
-                        const response = await fetch(proxy.url, {
+                // Helper function với timeout
+                const fetchWithTimeout = (url, timeout = 8000) => {
+                    return Promise.race([
+                        fetch(url, {
                             method: 'GET',
                             headers: { 'Accept': 'application/json' }
-                        });
+                        }),
+                        new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Timeout')), timeout)
+                        )
+                    ]);
+                };
+                
+                for (const proxy of proxies) {
+                    try {
+                        console.log(`🔄 Trying proxy: ${proxy.name}`);
+                        const startTime = Date.now();
                         
-                        if (!response.ok) continue;
+                        const response = await fetchWithTimeout(proxy.url, 8000);
+                        
+                        if (!response.ok) {
+                            console.log(`❌ ${proxy.name}: HTTP ${response.status}`);
+                            continue;
+                        }
                         
                         let text = await response.text();
-                        
-                        // allorigins wraps response in {contents: "..."}
-                        if (proxy.isWrapped) {
-                            try {
-                                const wrapped = JSON.parse(text);
-                                text = wrapped.contents || text;
-                            } catch (e) {}
-                        }
                         
                         // Check if it's valid JSON array
                         if (text.trim().startsWith('[')) {
                             data = JSON.parse(text);
-                            console.log(`Success with proxy: ${proxy.name}`);
+                            const elapsed = Date.now() - startTime;
+                            console.log(`✅ Success with ${proxy.name} in ${elapsed}ms`);
+                            showNotification(`✅ Kết nối thành công qua ${proxy.name} (${elapsed}ms)`, 'success');
                             break;
+                        } else {
+                            console.log(`❌ ${proxy.name}: Invalid response format`);
                         }
                     } catch (e) {
                         lastError = e;
-                        console.log(`Failed with proxy ${proxy.name}:`, e.message);
+                        console.log(`❌ ${proxy.name}: ${e.message}`);
                         continue;
                     }
                 }
@@ -4568,70 +4604,55 @@
                 return;
             }
             
-            // Update totalMonths and startYear
-            const firstMonth = monthsWithData[0].month; // "2025-08"
+            // Parse first month to get startYear and startMonth
+            // Format: "2025-08" -> year=2025, month=8
+            const firstMonth = monthsWithData[0].month;
             const [firstYear, firstMonthNum] = firstMonth.split('-').map(Number);
             
-            // Calculate start year based on first month with data
+            // Set start year and month
             startYear = firstYear;
-            if (firstMonthNum > 1) {
-                // If first data month is not January, we need to adjust
-                // e.g., if first month is 2025-08 (August), index 0 should be August
-            }
+            startMonth = firstMonthNum;
             
-            // Set total months
+            // Set total months based on data
             totalMonths = monthsWithData.length;
             currentPage = 1;
             
             // Clear cache
             monthDataCache = {};
             
-            // Import data
+            // Import data into cache
             monthsWithData.forEach((m, index) => {
-                // Parse month "2025-08" to get year and month
-                const [year, month] = m.month.split('-').map(Number);
-                
-                // Calculate the actual month index
-                // We want the data to show with correct month names
-                const monthIndex = index;
-                
-                monthDataCache[`load${monthIndex}`] = m.load.toFixed(1);
-                monthDataCache[`grid${monthIndex}`] = m.grid.toFixed(1);
-                monthDataCache[`backup${monthIndex}`] = m.backup.toFixed(1);
+                monthDataCache[`load${index}`] = m.load.toFixed(1);
+                monthDataCache[`grid${index}`] = m.grid.toFixed(1);
+                monthDataCache[`backup${index}`] = m.backup.toFixed(1);
             });
             
-            // Store month mapping for correct display
-            window.lumentreeMonthMapping = monthsWithData.map(m => m.month);
-            
-            // Reinitialize inputs
+            // Reinitialize inputs with new month count
             initializeInputs();
             
-            // Override month name function temporarily
-            const originalGetMonthName = getMonthName;
-            window.getMonthName = function(index) {
-                if (window.lumentreeMonthMapping && window.lumentreeMonthMapping[index]) {
-                    const [year, month] = window.lumentreeMonthMapping[index].split('-').map(Number);
-                    return `Tháng ${month}/${year}`;
-                }
-                return originalGetMonthName(index);
-            };
+            // Fill data into inputs (for current visible page)
+            const startIndex = (currentPage - 1) * MONTHS_PER_PAGE;
+            const endIndex = Math.min(startIndex + MONTHS_PER_PAGE, totalMonths);
             
-            // Reload inputs with data
-            monthsWithData.forEach((m, index) => {
-                const loadEl = document.getElementById(`load${index}`);
-                const gridEl = document.getElementById(`grid${index}`);
-                const backupEl = document.getElementById(`backup${index}`);
+            for (let i = startIndex; i < endIndex; i++) {
+                const loadEl = document.getElementById(`load${i}`);
+                const gridEl = document.getElementById(`grid${i}`);
+                const backupEl = document.getElementById(`backup${i}`);
                 
-                if (loadEl) loadEl.value = m.load.toFixed(1);
-                if (gridEl) gridEl.value = m.grid.toFixed(1);
-                if (backupEl) backupEl.value = m.backup.toFixed(1);
-            });
+                if (loadEl) loadEl.value = monthDataCache[`load${i}`] || '0';
+                if (gridEl) gridEl.value = monthDataCache[`grid${i}`] || '0';
+                if (backupEl) backupEl.value = monthDataCache[`backup${i}`] || '0';
+            }
             
+            // Close modal and calculate
             closeLumentreeModal();
             calculateSavings();
             saveSettings(true);
             
-            showNotification(`✅ Đã nhập ${monthsWithData.length} tháng từ Lumentree!`, 'success');
+            // Show success with details
+            const lastMonth = monthsWithData[monthsWithData.length - 1].month;
+            const [lastYear, lastMonthNum] = lastMonth.split('-').map(Number);
+            showNotification(`✅ Đã nhập ${monthsWithData.length} tháng (${firstMonthNum}/${firstYear} - ${lastMonthNum}/${lastYear}) từ Lumentree!`, 'success');
         }
         
         // Close modal on click outside
