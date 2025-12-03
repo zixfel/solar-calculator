@@ -468,76 +468,218 @@
         .roi-section {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
             border: 2px solid rgba(124, 58, 237, 0.3);
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
             box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
             backdrop-filter: blur(10px);
         }
 
         .roi-section h2 {
             color: #e0e7ff;
-            margin-bottom: 30px;
-            font-size: 1.6em;
+            margin-bottom: 20px;
+            font-size: 1.4em;
             text-align: center;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
-            text-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
         }
 
-        .roi-section .investment-config {
-            margin-bottom: 30px;
-        }
-
-        .roi-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .roi-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid rgba(139, 92, 246, 0.2);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .roi-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #8b5cf6, #a78bfa, #c4b5fd);
-        }
-
-        .roi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
-            border-color: rgba(139, 92, 246, 0.5);
-        }
-
-        .roi-card h4 {
-            color: #a78bfa;
-            font-size: 0.7em;
-            margin-bottom: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+        /* ROI Input Row */
+        .roi-input-row {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 10px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
+        .roi-input-row label {
+            color: #a78bfa;
+            font-weight: 600;
+            font-size: 0.9em;
+            white-space: nowrap;
+            margin: 0;
+        }
+
+        .roi-input-row input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #fff;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .roi-input-row input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .roi-calc-btn {
+            padding: 10px 18px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .roi-calc-btn:hover {
+            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .roi-calc-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ROI Progress Section */
+        .roi-progress-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        .roi-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .roi-progress-title {
+            color: #c4b5fd;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .roi-progress-percent {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .roi-progress-bar-wrapper {
+            margin-bottom: 8px;
+        }
+
+        .roi-progress-bar-bg {
+            height: 12px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .roi-progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #10b981);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .roi-progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75em;
+            color: #9ca3af;
+        }
+
+        /* ROI Stats Grid */
+        .roi-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .roi-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .roi-stat-item:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .roi-stat-item.profit-item {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .roi-stat-icon {
+            font-size: 1.5em;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 92, 246, 0.15);
+            border-radius: 10px;
+        }
+
+        .profit-item .roi-stat-icon {
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .roi-stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .roi-stat-label {
+            font-size: 0.75em;
+            color: #9ca3af;
+            margin-bottom: 2px;
+        }
+
+        .roi-stat-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #e0e7ff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .roi-stat-value.profit {
+            color: #10b981;
+        }
+
+        .roi-stat-note {
+            font-size: 0.7em;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        /* Legacy support - hide old elements */
+        .roi-cards, .roi-compact-grid, .roi-mini-progress, .roi-progress, .investment-config {
+            display: none !important;
+        }
+
+        /* Keep old roi-card styles for compatibility */
         .roi-card .roi-value {
             font-size: 1.4em;
             font-weight: 800;
@@ -835,13 +977,13 @@
         }
 
         .month-delete-btn {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            border: none;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            font-size: 16px;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -850,12 +992,19 @@
             transition: all 0.2s ease;
             line-height: 1;
             padding: 0;
+            opacity: 0.6;
         }
 
         .month-delete-btn:hover {
-            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-            transform: scale(1.1);
-            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+            color: #fca5a5;
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .month-input:hover .month-delete-btn {
+            opacity: 1;
         }
 
         label {
@@ -1765,38 +1914,98 @@
                 font-size: 0.9em;
             }
 
-            .roi-section .investment-config {
-                margin-bottom: 12px;
+            /* ROI Input Row - Mobile */
+            .roi-input-row {
+                flex-wrap: wrap;
+                gap: 8px;
+                padding: 10px 12px;
             }
-            
-            /* Hide default investment wrapper on mobile */
-            .roi-section .investment-input-wrapper {
-                display: none;
+
+            .roi-input-row label {
+                width: 100%;
+                font-size: 0.85em;
+                margin-bottom: 0;
             }
-            
-            /* Show compact input on mobile */
-            .roi-compact-input {
-                display: flex;
+
+            .roi-input-row input {
+                flex: 1;
+                min-width: 0;
+                padding: 10px 12px;
+                font-size: 0.95em;
             }
-            
-            /* Hide default ROI cards on mobile */
-            .roi-section .roi-cards {
-                display: none;
+
+            .roi-calc-btn {
+                padding: 10px 14px;
+                font-size: 0.85em;
             }
-            
-            /* Show compact grid on mobile */
-            .roi-compact-grid {
-                display: grid;
+
+            /* ROI Stats Grid - Mobile */
+            .roi-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
             }
-            
-            /* Hide default progress on mobile */
-            .roi-section .roi-progress {
-                display: none;
+
+            .roi-stat-item {
+                padding: 10px;
+                gap: 8px;
             }
-            
-            /* Show compact progress on mobile */
-            .roi-mini-progress {
-                display: block;
+
+            .roi-stat-icon {
+                font-size: 1.2em;
+                width: 32px;
+                height: 32px;
+            }
+
+            .roi-stat-label {
+                font-size: 0.65em;
+            }
+
+            .roi-stat-value {
+                font-size: 0.9em;
+            }
+
+            .roi-stat-note {
+                font-size: 0.6em;
+            }
+
+            /* ROI Progress - Mobile */
+            .roi-progress-section {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .roi-progress-title {
+                font-size: 0.85em;
+            }
+
+            .roi-progress-percent {
+                font-size: 1.1em;
+            }
+
+            .roi-progress-bar-bg {
+                height: 10px;
+            }
+
+            .roi-progress-labels {
+                font-size: 0.65em;
+            }
+
+            /* Month Delete Button - Mobile */
+            .month-header {
+                margin-bottom: 3px;
+            }
+
+            .month-delete-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+                border-radius: 3px;
+                opacity: 0.5;
+            }
+
+            .month-input:hover .month-delete-btn,
+            .month-delete-btn:active {
+                opacity: 1;
             }
 
             /* Input section */
@@ -2205,98 +2414,82 @@
                 <button class="toggle-btn" onclick="toggleROI()" id="toggleROIBtn">🔼 Ẩn</button>
             </h2>
             <div class="collapsible-content expanded" id="roiContent">
-            <!-- Investment Input - Desktop -->
-            <div class="investment-config">
-                <div class="investment-input-wrapper">
-                    <label>Chi phí lắp đặt hệ thống (VNĐ)</label>
-                    <input type="text" id="initialCost" value="0" placeholder="Ví dụ: 150,000,000">
-                    <span class="tooltip">Nhập tổng chi phí đầu tư ban đầu để tính toán ROI (hoàn vốn)</span>
+                <!-- Input Chi Phí -->
+                <div class="roi-input-row">
+                    <label>💵 Chi phí lắp đặt:</label>
+                    <input type="text" id="initialCost" value="0" placeholder="VD: 150,000,000">
+                    <input type="text" id="initialCostMobile" value="0" placeholder="150,000,000" style="display:none;">
+                    <button class="roi-calc-btn" onclick="calculateSavings()">🔄 Tính</button>
                 </div>
                 
-                <!-- Mobile Compact Input -->
-                <div class="roi-compact-input" id="roiCompactInput">
-                    <label>💰 Chi phí:</label>
-                    <input type="text" id="initialCostMobile" value="0" placeholder="150,000,000">
+                <!-- Progress Bar -->
+                <div class="roi-progress-section">
+                    <div class="roi-progress-header">
+                        <span class="roi-progress-title">📊 Tiến Độ Hoàn Vốn</span>
+                        <span class="roi-progress-percent" id="roiProgressText">0%</span>
+                    </div>
+                    <div class="roi-progress-bar-wrapper">
+                        <div class="roi-progress-bar-bg">
+                            <div class="roi-progress-bar-fill" id="roiProgressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="roi-progress-labels">
+                        <span>0 ₫</span>
+                        <span id="roiInitialCost">0 ₫</span>
+                    </div>
                 </div>
-            </div>
-
-            <!-- ROI Cards - Desktop -->
-            <div class="roi-cards">
-                <div class="roi-card">
-                    <h4>💵 Chi Phí Lắp Đặt</h4>
-                    <div class="roi-value" id="roiInitialCost">0 ₫</div>
+                
+                <!-- ROI Stats Grid -->
+                <div class="roi-stats-grid">
+                    <div class="roi-stat-item">
+                        <div class="roi-stat-icon">💰</div>
+                        <div class="roi-stat-info">
+                            <div class="roi-stat-label">Đã Tiết Kiệm</div>
+                            <div class="roi-stat-value" id="roiSaved">0 ₫</div>
+                            <div class="roi-stat-note" id="roiSavedNote"></div>
+                        </div>
+                    </div>
+                    <div class="roi-stat-item">
+                        <div class="roi-stat-icon">📉</div>
+                        <div class="roi-stat-info">
+                            <div class="roi-stat-label">Còn Thu Hồi</div>
+                            <div class="roi-stat-value" id="roiRemaining">0 ₫</div>
+                            <div class="roi-stat-note" id="roiRemainingNote"></div>
+                        </div>
+                    </div>
+                    <div class="roi-stat-item">
+                        <div class="roi-stat-icon">⏱️</div>
+                        <div class="roi-stat-info">
+                            <div class="roi-stat-label">Thời Gian Hoàn Vốn</div>
+                            <div class="roi-stat-value" id="roiTime">0 tháng</div>
+                            <div class="roi-stat-note" id="roiTimeNote"></div>
+                        </div>
+                    </div>
+                    <div class="roi-stat-item profit-item" id="roiProfitCard" style="display: none;">
+                        <div class="roi-stat-icon">🎉</div>
+                        <div class="roi-stat-info">
+                            <div class="roi-stat-label">Tiền Lời</div>
+                            <div class="roi-stat-value profit" id="roiProfit">0 ₫</div>
+                            <div class="roi-stat-note" id="roiProfitNote"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="roi-card">
-                    <h4>💰 Đã Tiết Kiệm</h4>
-                    <div class="roi-value" id="roiSaved">0 ₫</div>
-                    <div class="roi-unit" id="roiSavedNote"></div>
+                
+                <!-- Hidden elements for compatibility -->
+                <div style="display:none;">
+                    <span id="roiMiniCost"></span>
+                    <span id="roiMiniSaved"></span>
+                    <span id="roiMiniSavedNote"></span>
+                    <span id="roiMiniRemaining"></span>
+                    <span id="roiMiniRemainingNote"></span>
+                    <span id="roiMiniTime"></span>
+                    <span id="roiMiniTimeNote"></span>
+                    <span id="roiMiniProfit"></span>
+                    <span id="roiMiniProfitNote"></span>
+                    <span id="roiMiniProfitCard"></span>
+                    <span id="roiMiniProgressText"></span>
+                    <span id="roiMiniProgressFill"></span>
                 </div>
-                <div class="roi-card">
-                    <h4>📉 Còn Phải Thu Hồi</h4>
-                    <div class="roi-value" id="roiRemaining">0 ₫</div>
-                    <div class="roi-unit" id="roiRemainingNote"></div>
-                </div>
-                <div class="roi-card" id="roiProfitCard" style="display: none;">
-                    <h4>💸 Tiền Lời (Sau Hoàn Vốn)</h4>
-                    <div class="roi-value" id="roiProfit" style="color: #10b981;">0 ₫</div>
-                    <div class="roi-unit" id="roiProfitNote"></div>
-                </div>
-                <div class="roi-card">
-                    <h4>⏱️ Thời Gian Hoàn Vốn</h4>
-                    <div class="roi-value" id="roiTime">0 tháng</div>
-                    <div class="roi-unit" id="roiTimeNote"></div>
-                </div>
-            </div>
-            
-            <!-- Mobile Compact Grid -->
-            <div class="roi-compact-grid" id="roiCompactGrid">
-                <div class="roi-mini-card">
-                    <div class="mini-label">💵 Đầu tư</div>
-                    <div class="mini-value" id="roiMiniCost">0 ₫</div>
-                </div>
-                <div class="roi-mini-card">
-                    <div class="mini-label">💰 Đã tiết kiệm</div>
-                    <div class="mini-value" id="roiMiniSaved">0 ₫</div>
-                    <div class="mini-note" id="roiMiniSavedNote"></div>
-                </div>
-                <div class="roi-mini-card">
-                    <div class="mini-label">📉 Còn lại</div>
-                    <div class="mini-value" id="roiMiniRemaining">0 ₫</div>
-                    <div class="mini-note" id="roiMiniRemainingNote"></div>
-                </div>
-                <div class="roi-mini-card">
-                    <div class="mini-label">⏱️ Hoàn vốn</div>
-                    <div class="mini-value" id="roiMiniTime">0 năm</div>
-                    <div class="mini-note" id="roiMiniTimeNote"></div>
-                </div>
-                <div class="roi-mini-card highlight" id="roiMiniProfitCard" style="display: none; grid-column: span 2;">
-                    <div class="mini-label">🎉 Đã có lời!</div>
-                    <div class="mini-value" id="roiMiniProfit">0 ₫</div>
-                    <div class="mini-note" id="roiMiniProfitNote"></div>
-                </div>
-            </div>
-            
-            <!-- Mobile Mini Progress -->
-            <div class="roi-mini-progress" id="roiMiniProgress">
-                <div class="roi-mini-progress-header">
-                    <span class="label">📊 Tiến độ hoàn vốn</span>
-                    <span class="percent" id="roiMiniProgressText">0%</span>
-                </div>
-                <div class="roi-mini-bar">
-                    <div class="roi-mini-bar-fill" id="roiMiniProgressFill" style="width: 0%"></div>
-                </div>
-            </div>
-            
-            <!-- Desktop Progress -->
-            <div class="roi-progress">
-                <div class="roi-progress-label">
-                    <span>📊 Tiến Độ Hoàn Vốn</span>
-                    <span class="roi-progress-percentage" id="roiProgressText">0%</span>
-                </div>
-                <div class="roi-progress-bar">
-                    <div class="roi-progress-fill" id="roiProgressFill" style="width: 0%"></div>
-                </div>
-            </div>
             </div>
         </div>
 
