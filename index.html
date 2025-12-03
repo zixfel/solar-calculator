@@ -2143,7 +2143,7 @@
                 <div class="stat-card">
                     <h4>💡 Hiệu Suất Tiết Kiệm</h4>
                     <div class="stat-value" id="statSavingsPercent">0%</div>
-                    <div class="stat-label">Tiết kiệm vs Không Solar</div>
+                    <div class="stat-label" id="statSavingsPercentLabel">% giảm tiền điện nhờ Solar</div>
                 </div>
                 
                 <!-- NHÓM 3: XU HƯỚNG & TRUNG BÌNH -->
@@ -2155,7 +2155,7 @@
                 <div class="stat-card">
                     <h4>💰 Trung Bình/Ngày</h4>
                     <div class="stat-value" id="statAvgSavings">0 ₫</div>
-                    <div class="stat-label">Tiết kiệm TB mỗi ngày</div>
+                    <div class="stat-label" id="statAvgSavingsLabel">Tiết kiệm TB mỗi ngày</div>
                 </div>
                 
                 <!-- NHÓM 4: THÔNG TIN CHUNG -->
@@ -3264,14 +3264,17 @@
                     monthsWithData++;
                 }
 
-                // Điện mặt trời sản xuất = Load + Backup - Grid
-                const solarProduced = load + backup - grid;
+                // Tổng tiêu thụ = Load + Backup (đây là tổng điện tiêu thụ thực tế)
+                const totalConsumption = load + backup;
+                
+                // Điện mặt trời sản xuất = Tổng tiêu thụ - Grid EVN
+                const solarProduced = totalConsumption - grid;
                 
                 // Chi phí lưới điện EVN (Grid) - DÙNG BẬC THANG
                 const gridCost = calculateTieredPrice(grid, vatRate);
                 
-                // Chi phí nếu phải mua phần Solar từ EVN (thay vì tự sản xuất) - DÙNG BẬC THANG
-                const costWithoutSolar = calculateTieredPrice(solarProduced, vatRate);
+                // Chi phí nếu KHÔNG CÓ SOLAR = Tính bậc thang cho TOÀN BỘ tiêu thụ (Load + Backup)
+                const costWithoutSolar = calculateTieredPrice(totalConsumption, vatRate);
                 
                 // Chi phí điện mặt trời (hiện tại = 0 vì tự sản xuất)
                 const solarCost = solarProduced * solarPrice;
@@ -3279,8 +3282,8 @@
                 // Chi phí thực tế = Chi phí lưới điện + Chi phí mặt trời
                 const actualCost = gridCost + solarCost;
                 
-                // Tiết kiệm = Chi phí nếu mua Solar từ EVN - Chi phí Solar thực tế
-                const savings = costWithoutSolar - solarCost;
+                // Tiết kiệm = Chi phí nếu không có Solar - Chi phí thực tế
+                const savings = costWithoutSolar - actualCost;
 
                 totalSavings += savings;
                 totalLoad += load;
@@ -3295,6 +3298,7 @@
                     load: load,
                     grid: grid,
                     backup: backup,
+                    totalConsumption: totalConsumption,
                     solarProduced: solarProduced,
                     gridCost: gridCost,
                     costWithoutSolar: costWithoutSolar,
@@ -3370,15 +3374,18 @@
             document.getElementById('statSolarPercent').textContent = solarPercent + '%';
             document.getElementById('statGridPercent').textContent = gridPercent + '%';
             
-            // 3. Hiệu suất tiết kiệm (Tiết kiệm / Chi phí không có Solar)
+            // 3. Hiệu suất tiết kiệm = % tiền đã tiết kiệm được so với nếu không có Solar
+            // Công thức: (Tiết kiệm / Chi phí nếu không có Solar) × 100
+            // Ý nghĩa: Bạn đã giảm được bao nhiêu % tiền điện nhờ có Solar
             let savingsPercent = 0;
             if (totalCostWithoutSolar > 0) {
+                // Tiết kiệm = Chi phí không Solar - Chi phí thực tế (Grid + Solar cost)
+                // Hiệu suất = Tiết kiệm / Chi phí không Solar × 100
                 savingsPercent = ((totalSavings / totalCostWithoutSolar) * 100);
-                // Đảm bảo không vượt quá 100% (logic case edge)
-                if (savingsPercent > 100) savingsPercent = 100;
-                savingsPercent = savingsPercent.toFixed(1);
+                savingsPercent = Math.min(savingsPercent, 100).toFixed(1); // Không vượt quá 100%
             }
             document.getElementById('statSavingsPercent').textContent = savingsPercent + '%';
+            document.getElementById('statSavingsPercentLabel').textContent = `Giảm ${savingsPercent}% tiền điện`;
             
             // 4. Xu hướng tháng gần đây (so sánh 3 tháng gần nhất với 3 tháng trước đó)
             if (monthlyDetails.length >= 6) {
@@ -3418,9 +3425,33 @@
             // 5. Số tháng có dữ liệu (chỉ đếm tháng có data, không tính tháng 0)
             document.getElementById('statTotalMonths').textContent = monthsWithData + ' tháng';
             
-            // 6. Trung bình tiết kiệm/ngày
-            const avgSavingsPerDay = monthsWithData > 0 ? totalSavings / (monthsWithData * 30) : 0;
+            // 6. Trung bình tiết kiệm/ngày - Tính chính xác theo số ngày thực tế
+            // Tính tổng số ngày dựa trên các tháng có dữ liệu
+            let totalDays = 0;
+            const monthsWithDataDetails = monthlyDetails.filter(m => m.load > 0 || m.grid > 0 || m.backup > 0);
+            
+            monthsWithDataDetails.forEach(m => {
+                // Parse tháng từ "Tháng X/YYYY"
+                const match = m.month.match(/Tháng (\d+)\/(\d+)/);
+                if (match) {
+                    const monthNum = parseInt(match[1]);
+                    const year = parseInt(match[2]);
+                    // Số ngày trong tháng
+                    const daysInMonth = new Date(year, monthNum, 0).getDate();
+                    totalDays += daysInMonth;
+                } else {
+                    totalDays += 30; // Fallback
+                }
+            });
+            
+            // Nếu không tính được, dùng ước lượng 30 ngày/tháng
+            if (totalDays === 0 && monthsWithData > 0) {
+                totalDays = monthsWithData * 30;
+            }
+            
+            const avgSavingsPerDay = totalDays > 0 ? totalSavings / totalDays : 0;
             document.getElementById('statAvgSavings').textContent = formatVND(avgSavingsPerDay);
+            document.getElementById('statAvgSavingsLabel').textContent = `Tính trên ${totalDays} ngày (${monthsWithData} tháng)`;
             
             // 7. Tháng Solar sản xuất nhiều nhất
             let bestSolarMonth = monthlyDetails[0];
