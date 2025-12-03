@@ -2038,9 +2038,14 @@
                 Quản lý và theo dõi hiệu quả tiết kiệm từ hệ thống năng lượng mặt trời của bạn<br>
                 <span class="auto-save-indicator" id="autoSaveIndicator">💾 Lưu tự động khi bấm Lưu Cài Đặt</span>
             </div>
-            <button class="evn-calculator-btn" onclick="openEVNModal()">
-                ⚡ Tính Tiền Điện EVN (Bậc Thang)
-            </button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                <button class="evn-calculator-btn" onclick="openEVNModal()">
+                    ⚡ Tính Tiền Điện EVN
+                </button>
+                <button class="evn-calculator-btn" onclick="openLumentreeModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    ☀️ Đồng Bộ Lumentree
+                </button>
+            </div>
         </div>
 
         <div class="storage-info" id="storageInfo">
@@ -4292,6 +4297,432 @@
         window.addEventListener('appinstalled', (evt) => {
             console.log('✅ App installed successfully!');
         });
+    </script>
+    
+    <!-- Lumentree Sync Modal -->
+    <div id="lumentreeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <h2>☀️ Đồng Bộ Từ Lumentree</h2>
+                <button class="modal-close" onclick="closeLumentreeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align: center; color: #cbd5e0; margin-bottom: 20px; font-size: 0.95em;">
+                    Lấy dữ liệu từ Lumentree Dashboard về ứng dụng
+                </p>
+                
+                <!-- Tab buttons -->
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button id="tabAuto" class="evn-btn-calculate" onclick="switchLumentreeTab('auto')" style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        🔄 Tự Động
+                    </button>
+                    <button id="tabManual" class="evn-btn-calculate" onclick="switchLumentreeTab('manual')" style="flex: 1; background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">
+                        📋 Thủ Công
+                    </button>
+                </div>
+                
+                <!-- Tab Auto -->
+                <div id="lumentreeTabAuto">
+                    <div class="evn-warning" style="border-color: #10b981; background: rgba(16, 185, 129, 0.15); color: #6ee7b7;">
+                        <strong>📌 Cách 1 - Tự động:</strong> Nhập Device ID để lấy dữ liệu tự động.<br>
+                        VD: URL <code>lumentree.net/dashboard/P250801055</code> → ID là <code>P250801055</code>
+                    </div>
+                    
+                    <div class="evn-input-section" style="border-color: #10b981;">
+                        <h3 style="color: #10b981;">🔗 Kết Nối Lumentree</h3>
+                        <div class="evn-input-group">
+                            <label for="lumentreeDeviceId">Device ID:</label>
+                            <input type="text" id="lumentreeDeviceId" placeholder="Ví dụ: P250801055" style="text-transform: uppercase;">
+                        </div>
+                        <button class="evn-btn-calculate" onclick="fetchLumentreeData()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            🔄 Lấy Dữ Liệu
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tab Manual -->
+                <div id="lumentreeTabManual" style="display: none;">
+                    <div class="evn-warning" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
+                        <strong>📌 Hướng dẫn lấy dữ liệu thủ công:</strong><br>
+                        1. Mở link API trong tab mới (thay YOUR_ID bằng Device ID của bạn):<br>
+                        <code style="background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; display: inline-block; margin: 5px 0;">
+                            https://lumentree.net/api/monthly/YOUR_ID
+                        </code><br>
+                        2. Bấm <kbd>Ctrl+A</kbd> để chọn tất cả, <kbd>Ctrl+C</kbd> để copy<br>
+                        3. Paste vào ô bên dưới bằng <kbd>Ctrl+V</kbd>
+                    </div>
+                    
+                    <div class="evn-input-section" style="border-color: #f59e0b;">
+                        <h3 style="color: #f59e0b;">📋 Paste JSON Data</h3>
+                        <div class="evn-input-group">
+                            <label for="lumentreeJsonInput">Dữ liệu JSON từ Lumentree:</label>
+                            <textarea id="lumentreeJsonInput" placeholder='[{"month":"2025-10","load":827.4,"grid":236.0,"pv":686.0,"backup":0.4}, ...]' style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid #4a5568; border-radius: 10px; background: rgba(26, 32, 44, 0.8); color: #e2e8f0; font-family: monospace; font-size: 0.85em; resize: vertical;"></textarea>
+                        </div>
+                        <button class="evn-btn-calculate" onclick="parseManualLumentreeData()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                            📥 Xử Lý Dữ Liệu
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="evn-result-section" id="lumentreeResultSection">
+                    <h3 style="margin-bottom: 15px; color: #10b981; font-size: 1.1em;">📋 Dữ Liệu Từ Lumentree</h3>
+                    <div id="lumentreePreview"></div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button class="evn-btn-calculate" onclick="importLumentreeData()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); flex: 1;">
+                            ✅ Nhập Vào Ứng Dụng
+                        </button>
+                        <button class="evn-btn-calculate" onclick="closeLumentreeModal()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); flex: 1;">
+                            ❌ Hủy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ==================== LUMENTREE SYNC ====================
+        let lumentreeData = null;
+        
+        function openLumentreeModal() {
+            document.getElementById('lumentreeModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Load saved device ID
+            const savedDeviceId = localStorage.getItem('lumentreeDeviceId');
+            if (savedDeviceId) {
+                document.getElementById('lumentreeDeviceId').value = savedDeviceId;
+            }
+        }
+        
+        function closeLumentreeModal() {
+            document.getElementById('lumentreeModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+        
+        async function fetchLumentreeData() {
+            const deviceId = document.getElementById('lumentreeDeviceId').value.trim().toUpperCase();
+            
+            if (!deviceId) {
+                showNotification('⚠️ Vui lòng nhập Device ID!', 'error');
+                return;
+            }
+            
+            // Save device ID
+            localStorage.setItem('lumentreeDeviceId', deviceId);
+            
+            try {
+                showNotification('🔄 Đang lấy dữ liệu từ Lumentree...', 'info');
+                
+                // Sử dụng CORS proxy để bypass CORS restriction
+                const targetUrl = `https://lumentree.net/api/monthly/${deviceId}`;
+                
+                // Thử nhiều proxy khác nhau (theo thứ tự ưu tiên)
+                const proxies = [
+                    { url: `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`, name: 'corsproxy.io' },
+                    { url: `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`, name: 'allorigins', isWrapped: true },
+                    { url: `https://thingproxy.freeboard.io/fetch/${targetUrl}`, name: 'thingproxy' }
+                ];
+                
+                let data = null;
+                let lastError = null;
+                
+                for (const proxy of proxies) {
+                    try {
+                        console.log(`Trying proxy: ${proxy.name}`);
+                        const response = await fetch(proxy.url, {
+                            method: 'GET',
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        
+                        if (!response.ok) continue;
+                        
+                        let text = await response.text();
+                        
+                        // allorigins wraps response in {contents: "..."}
+                        if (proxy.isWrapped) {
+                            try {
+                                const wrapped = JSON.parse(text);
+                                text = wrapped.contents || text;
+                            } catch (e) {}
+                        }
+                        
+                        // Check if it's valid JSON array
+                        if (text.trim().startsWith('[')) {
+                            data = JSON.parse(text);
+                            console.log(`Success with proxy: ${proxy.name}`);
+                            break;
+                        }
+                    } catch (e) {
+                        lastError = e;
+                        console.log(`Failed with proxy ${proxy.name}:`, e.message);
+                        continue;
+                    }
+                }
+                
+                if (!data) {
+                    // Nếu tất cả proxy đều fail, gợi ý dùng tab thủ công
+                    throw new Error(`Không thể kết nối tự động. Vui lòng chuyển sang tab "📋 Thủ Công" và paste dữ liệu JSON.`);
+                }
+                
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error('Không có dữ liệu từ thiết bị này');
+                }
+                
+                lumentreeData = data;
+                
+                // Filter only months with data
+                const monthsWithData = data.filter(m => m.load > 0 || m.grid > 0 || m.pv > 0);
+                
+                // Display preview
+                let previewHtml = `
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <div style="font-size: 1.1em; font-weight: bold; color: #10b981; margin-bottom: 10px;">
+                            📡 Thiết bị: ${deviceId}
+                        </div>
+                        <div style="color: #cbd5e0;">
+                            📅 Tìm thấy <strong>${monthsWithData.length}</strong> tháng có dữ liệu
+                        </div>
+                    </div>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.85em;">
+                            <thead>
+                                <tr style="background: rgba(16, 185, 129, 0.2);">
+                                    <th style="padding: 8px; text-align: left; border-bottom: 2px solid #10b981;">Tháng</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #10b981;">Load</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #10b981;">Grid</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #10b981;">PV</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #10b981;">Backup</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.forEach(m => {
+                    const hasData = m.load > 0 || m.grid > 0 || m.pv > 0;
+                    const rowStyle = hasData ? '' : 'opacity: 0.4;';
+                    previewHtml += `
+                        <tr style="${rowStyle}">
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568;">${m.month}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right;">${m.load.toFixed(1)}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right;">${m.grid.toFixed(1)}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right; color: #10b981;">${m.pv.toFixed(1)}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right;">${m.backup.toFixed(1)}</td>
+                        </tr>
+                    `;
+                });
+                
+                previewHtml += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                document.getElementById('lumentreePreview').innerHTML = previewHtml;
+                document.getElementById('lumentreeResultSection').classList.add('show');
+                
+                showNotification(`✅ Đã lấy dữ liệu ${monthsWithData.length} tháng từ Lumentree!`, 'success');
+                
+            } catch (error) {
+                console.error('Lumentree fetch error:', error);
+                showNotification(`❌ Lỗi: ${error.message}`, 'error');
+            }
+        }
+        
+        function importLumentreeData() {
+            if (!lumentreeData || lumentreeData.length === 0) {
+                showNotification('⚠️ Không có dữ liệu để nhập!', 'error');
+                return;
+            }
+            
+            // Filter months with data
+            const monthsWithData = lumentreeData.filter(m => m.load > 0 || m.grid > 0 || m.pv > 0);
+            
+            if (monthsWithData.length === 0) {
+                showNotification('⚠️ Không có tháng nào có dữ liệu!', 'error');
+                return;
+            }
+            
+            // Update totalMonths and startYear
+            const firstMonth = monthsWithData[0].month; // "2025-08"
+            const [firstYear, firstMonthNum] = firstMonth.split('-').map(Number);
+            
+            // Calculate start year based on first month with data
+            startYear = firstYear;
+            if (firstMonthNum > 1) {
+                // If first data month is not January, we need to adjust
+                // e.g., if first month is 2025-08 (August), index 0 should be August
+            }
+            
+            // Set total months
+            totalMonths = monthsWithData.length;
+            currentPage = 1;
+            
+            // Clear cache
+            monthDataCache = {};
+            
+            // Import data
+            monthsWithData.forEach((m, index) => {
+                // Parse month "2025-08" to get year and month
+                const [year, month] = m.month.split('-').map(Number);
+                
+                // Calculate the actual month index
+                // We want the data to show with correct month names
+                const monthIndex = index;
+                
+                monthDataCache[`load${monthIndex}`] = m.load.toFixed(1);
+                monthDataCache[`grid${monthIndex}`] = m.grid.toFixed(1);
+                monthDataCache[`backup${monthIndex}`] = m.backup.toFixed(1);
+            });
+            
+            // Store month mapping for correct display
+            window.lumentreeMonthMapping = monthsWithData.map(m => m.month);
+            
+            // Reinitialize inputs
+            initializeInputs();
+            
+            // Override month name function temporarily
+            const originalGetMonthName = getMonthName;
+            window.getMonthName = function(index) {
+                if (window.lumentreeMonthMapping && window.lumentreeMonthMapping[index]) {
+                    const [year, month] = window.lumentreeMonthMapping[index].split('-').map(Number);
+                    return `Tháng ${month}/${year}`;
+                }
+                return originalGetMonthName(index);
+            };
+            
+            // Reload inputs with data
+            monthsWithData.forEach((m, index) => {
+                const loadEl = document.getElementById(`load${index}`);
+                const gridEl = document.getElementById(`grid${index}`);
+                const backupEl = document.getElementById(`backup${index}`);
+                
+                if (loadEl) loadEl.value = m.load.toFixed(1);
+                if (gridEl) gridEl.value = m.grid.toFixed(1);
+                if (backupEl) backupEl.value = m.backup.toFixed(1);
+            });
+            
+            closeLumentreeModal();
+            calculateSavings();
+            saveSettings(true);
+            
+            showNotification(`✅ Đã nhập ${monthsWithData.length} tháng từ Lumentree!`, 'success');
+        }
+        
+        // Close modal on click outside
+        document.getElementById('lumentreeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLumentreeModal();
+            }
+        });
+        
+        // Enter key to fetch
+        document.getElementById('lumentreeDeviceId').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                fetchLumentreeData();
+            }
+        });
+        
+        // Tab switching
+        function switchLumentreeTab(tab) {
+            const tabAuto = document.getElementById('lumentreeTabAuto');
+            const tabManual = document.getElementById('lumentreeTabManual');
+            const btnAuto = document.getElementById('tabAuto');
+            const btnManual = document.getElementById('tabManual');
+            
+            if (tab === 'auto') {
+                tabAuto.style.display = 'block';
+                tabManual.style.display = 'none';
+                btnAuto.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                btnManual.style.background = 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
+            } else {
+                tabAuto.style.display = 'none';
+                tabManual.style.display = 'block';
+                btnAuto.style.background = 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
+                btnManual.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+            }
+            
+            // Hide result section when switching
+            document.getElementById('lumentreeResultSection').classList.remove('show');
+        }
+        
+        // Parse manual JSON input
+        function parseManualLumentreeData() {
+            const jsonInput = document.getElementById('lumentreeJsonInput').value.trim();
+            
+            if (!jsonInput) {
+                showNotification('⚠️ Vui lòng paste dữ liệu JSON!', 'error');
+                return;
+            }
+            
+            try {
+                const data = JSON.parse(jsonInput);
+                
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error('Dữ liệu phải là một mảng JSON');
+                }
+                
+                // Validate data structure
+                const firstItem = data[0];
+                if (!firstItem.month || firstItem.load === undefined) {
+                    throw new Error('Dữ liệu không đúng định dạng Lumentree');
+                }
+                
+                lumentreeData = data;
+                
+                // Display preview (reuse the same preview function)
+                const monthsWithData = data.filter(m => m.load > 0 || m.grid > 0 || m.pv > 0);
+                
+                let previewHtml = `
+                    <div style="background: rgba(245, 158, 11, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <div style="font-size: 1.1em; font-weight: bold; color: #f59e0b; margin-bottom: 10px;">
+                            📋 Dữ liệu từ JSON
+                        </div>
+                        <div style="color: #cbd5e0;">
+                            📅 Tìm thấy <strong>${monthsWithData.length}</strong> tháng có dữ liệu
+                        </div>
+                    </div>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.85em;">
+                            <thead>
+                                <tr style="background: rgba(245, 158, 11, 0.2);">
+                                    <th style="padding: 8px; text-align: left; border-bottom: 2px solid #f59e0b;">Tháng</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #f59e0b;">Load</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #f59e0b;">Grid</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #f59e0b;">PV</th>
+                                    <th style="padding: 8px; text-align: right; border-bottom: 2px solid #f59e0b;">Backup</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.forEach(m => {
+                    const hasData = (m.load || 0) > 0 || (m.grid || 0) > 0 || (m.pv || 0) > 0;
+                    const rowStyle = hasData ? '' : 'opacity: 0.4;';
+                    previewHtml += `
+                        <tr style="${rowStyle}">
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568;">${m.month}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right;">${(m.load || 0).toFixed(1)}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right;">${(m.grid || 0).toFixed(1)}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right; color: #f59e0b;">${(m.pv || 0).toFixed(1)}</td>
+                            <td style="padding: 6px 8px; border-bottom: 1px solid #4a5568; text-align: right;">${(m.backup || 0).toFixed(1)}</td>
+                        </tr>
+                    `;
+                });
+                
+                previewHtml += `</tbody></table></div>`;
+                
+                document.getElementById('lumentreePreview').innerHTML = previewHtml;
+                document.getElementById('lumentreeResultSection').classList.add('show');
+                
+                showNotification(`✅ Đã xử lý ${monthsWithData.length} tháng dữ liệu!`, 'success');
+                
+            } catch (error) {
+                console.error('JSON parse error:', error);
+                showNotification(`❌ Lỗi: ${error.message}`, 'error');
+            }
+        }
+        // ==================== END LUMENTREE SYNC ====================
     </script>
 </body>
 </html>

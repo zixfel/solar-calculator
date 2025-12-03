@@ -2,9 +2,20 @@
 
 Ứng dụng web giúp bạn tính toán và theo dõi hiệu quả tiết kiệm chi phí từ hệ thống năng lượng mặt trời của mình.
 
-**🎨 Phiên bản 3.4.5 - Mobile ROI Compact** (2025-12-02)
+**🎨 Phiên bản 3.4.6 - Lumentree Sync** (2025-12-03)
 
-## 🎉 TÍNH NĂNG MỚI v3.4.5
+## 🎉 TÍNH NĂNG MỚI v3.4.6
+
+### ☀️ Đồng Bộ Lumentree Dashboard (v3.4.6 - 2025-12-03)
+- **Tích hợp API Lumentree**: Tự động lấy dữ liệu từ Lumentree Dashboard
+- **Cách sử dụng**:
+  1. Bấm nút "☀️ Đồng Bộ Lumentree" ở header
+  2. Nhập Device ID (VD: `P250801055` từ URL `lumentree.net/dashboard/P250801055`)
+  3. Bấm "Lấy Dữ Liệu" để xem preview
+  4. Bấm "Nhập Vào Ứng Dụng" để import
+- **Dữ liệu được import**: Load, Grid, PV, Backup theo từng tháng
+- **Tự động lưu Device ID**: Không cần nhập lại lần sau
+- **Preview trước khi import**: Xem trước dữ liệu sẽ được nhập
 
 ### 📱 Mobile ROI Compact Layout (v3.4.5 - 2025-12-02)
 - **Phần Đầu tư & ROI trên mobile được tối ưu hoàn toàn**:
