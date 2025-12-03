@@ -4344,12 +4344,16 @@
                 <div id="lumentreeTabManual" style="display: none;">
                     <div class="evn-warning" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
                         <strong>📌 Hướng dẫn lấy dữ liệu thủ công:</strong><br>
-                        1. Mở link API trong tab mới (thay YOUR_ID bằng Device ID của bạn):<br>
-                        <code style="background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; display: inline-block; margin: 5px 0;">
-                            https://lumentree.net/api/monthly/YOUR_ID
-                        </code><br>
+                        1. Nhập Device ID và bấm nút "Mở Link API":<br>
+                        <div style="display: flex; gap: 8px; align-items: center; margin: 8px 0;">
+                            <input type="text" id="manualDeviceId" placeholder="VD: P250801050" 
+                                style="flex: 1; padding: 8px 12px; border: 2px solid #f59e0b; border-radius: 8px; background: rgba(0,0,0,0.3); color: #fbbf24; font-family: monospace; font-weight: bold;">
+                            <button onclick="openLumentreeAPI()" style="padding: 8px 16px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; white-space: nowrap;">
+                                🔗 Mở Link API
+                            </button>
+                        </div>
                         2. Bấm <kbd>Ctrl+A</kbd> để chọn tất cả, <kbd>Ctrl+C</kbd> để copy<br>
-                        3. Paste vào ô bên dưới bằng <kbd>Ctrl+V</kbd>
+                        3. Quay lại đây và Paste vào ô bên dưới bằng <kbd>Ctrl+V</kbd>
                     </div>
                     
                     <div class="evn-input-section" style="border-color: #f59e0b;">
@@ -4392,7 +4396,28 @@
             const savedDeviceId = localStorage.getItem('lumentreeDeviceId');
             if (savedDeviceId) {
                 document.getElementById('lumentreeDeviceId').value = savedDeviceId;
+                document.getElementById('manualDeviceId').value = savedDeviceId;
             }
+        }
+        
+        // Mở link API trong tab mới
+        function openLumentreeAPI() {
+            let deviceId = document.getElementById('manualDeviceId').value.trim().toUpperCase();
+            if (!deviceId) {
+                // Fallback to auto tab device ID
+                deviceId = document.getElementById('lumentreeDeviceId').value.trim().toUpperCase();
+            }
+            if (!deviceId) {
+                showNotification('⚠️ Vui lòng nhập Device ID!', 'error');
+                return;
+            }
+            // Save device ID
+            localStorage.setItem('lumentreeDeviceId', deviceId);
+            document.getElementById('lumentreeDeviceId').value = deviceId;
+            
+            const apiUrl = `https://lumentree.net/api/monthly/${deviceId}`;
+            window.open(apiUrl, '_blank');
+            showNotification(`🔗 Đã mở API cho thiết bị ${deviceId}. Copy dữ liệu và paste vào ô bên dưới!`, 'info');
         }
         
         function closeLumentreeModal() {
@@ -4630,16 +4655,28 @@
             const btnAuto = document.getElementById('tabAuto');
             const btnManual = document.getElementById('tabManual');
             
+            // Sync device ID between tabs
+            const autoDeviceId = document.getElementById('lumentreeDeviceId').value.trim();
+            const manualDeviceId = document.getElementById('manualDeviceId').value.trim();
+            
             if (tab === 'auto') {
                 tabAuto.style.display = 'block';
                 tabManual.style.display = 'none';
                 btnAuto.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
                 btnManual.style.background = 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
+                // Sync from manual to auto
+                if (manualDeviceId && !autoDeviceId) {
+                    document.getElementById('lumentreeDeviceId').value = manualDeviceId;
+                }
             } else {
                 tabAuto.style.display = 'none';
                 tabManual.style.display = 'block';
                 btnAuto.style.background = 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
                 btnManual.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                // Sync from auto to manual
+                if (autoDeviceId) {
+                    document.getElementById('manualDeviceId').value = autoDeviceId;
+                }
             }
             
             // Hide result section when switching
