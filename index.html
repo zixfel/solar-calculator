@@ -820,11 +820,42 @@
             border: 1px solid #4a5568;
         }
 
-        .month-input h4 {
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 5px;
+        }
+
+        .month-input h4 {
+            margin: 0;
             color: #4ade80;
             font-size: 0.8em;
             font-weight: 600;
+        }
+
+        .month-delete-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .month-delete-btn:hover {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
         }
 
         label {
@@ -2511,7 +2542,10 @@
                 }
                 
                 monthDiv.innerHTML = `
-                    <h4>${getMonthName(i)}</h4>
+                    <div class="month-header">
+                        <h4>${getMonthName(i)}</h4>
+                        <button class="month-delete-btn" onclick="deleteSpecificMonth(${i})" title="Xóa tháng này">−</button>
+                    </div>
                     <label>🔌 Load (kWh)</label>
                     <input type="number" id="load${i}" value="${loadVal}" min="0" step="0.1" placeholder="0">
                     
@@ -2626,6 +2660,69 @@
                 if (currentPage > totalPages) currentPage = totalPages;
                 initializeInputs(true);
                 showNotification(`❌ Đã xóa tháng cuối!`, 'info');
+            }
+        }
+
+        // Xóa một tháng cụ thể (bất kỳ vị trí nào)
+        function deleteSpecificMonth(indexToDelete) {
+            if (totalMonths <= 1) {
+                showNotification('⚠️ Không thể xóa! Phải có ít nhất 1 tháng.', 'error');
+                return;
+            }
+            
+            const monthName = getMonthName(indexToDelete);
+            
+            if (confirm(`Bạn có chắc muốn xóa ${monthName}?`)) {
+                // Lưu tất cả dữ liệu hiện tại vào cache trước
+                for (let i = 0; i < totalMonths; i++) {
+                    const loadEl = document.getElementById(`load${i}`);
+                    const gridEl = document.getElementById(`grid${i}`);
+                    const backupEl = document.getElementById(`backup${i}`);
+                    
+                    if (loadEl) monthDataCache[`load${i}`] = loadEl.value;
+                    if (gridEl) monthDataCache[`grid${i}`] = gridEl.value;
+                    if (backupEl) monthDataCache[`backup${i}`] = backupEl.value;
+                }
+                
+                // Tạo cache mới, bỏ qua tháng bị xóa và dịch chuyển các tháng sau lên
+                const newCache = {};
+                let newIndex = 0;
+                
+                for (let i = 0; i < totalMonths; i++) {
+                    if (i !== indexToDelete) {
+                        newCache[`load${newIndex}`] = monthDataCache[`load${i}`] || '0';
+                        newCache[`grid${newIndex}`] = monthDataCache[`grid${i}`] || '0';
+                        newCache[`backup${newIndex}`] = monthDataCache[`backup${i}`] || '0';
+                        newIndex++;
+                    }
+                }
+                
+                // Cập nhật cache và giảm tổng số tháng
+                monthDataCache = newCache;
+                totalMonths--;
+                
+                // Nếu xóa tháng đầu tiên, cần cập nhật startMonth
+                if (indexToDelete === 0) {
+                    // Tháng tiếp theo trở thành tháng đầu
+                    startMonth++;
+                    if (startMonth > 12) {
+                        startMonth = 1;
+                        startYear++;
+                    }
+                }
+                
+                // Điều chỉnh trang nếu cần
+                const totalPages = Math.ceil(totalMonths / MONTHS_PER_PAGE);
+                if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+                
+                // Khởi tạo lại inputs
+                initializeInputs();
+                
+                showNotification(`❌ Đã xóa ${monthName}!`, 'info');
+                
+                // Tính toán lại
+                calculateSavings();
+                saveSettings(true);
             }
         }
 
