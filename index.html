@@ -2292,46 +2292,55 @@
             <strong>💾 Trạng thái lưu trữ:</strong> <span id="storageStatus">Đang tải...</span>
         </div>
 
-        <div class="summary-cards">
-            <div class="card">
-                <h3>Tổng Tiết Kiệm</h3>
-                <div class="value" id="totalSavings">0 ₫</div>
-            </div>
-            <div class="card">
-                <h3>Tổng Điện Tiêu Thụ<br>(Load)</h3>
-                <div class="value" id="totalLoad">0 kWh</div>
-            </div>
-            <div class="card">
-                <h3>Tổng Điện Solar<br>Sản Xuất</h3>
-                <div class="value" id="totalSolar">0 kWh</div>
-            </div>
-            <div class="card">
-                <h3>Tổng Điện Lưới<br>EVN (Grid)</h3>
-                <div class="value" id="totalGrid">0 kWh</div>
-            </div>
-            <div class="card">
-                <h3>Chi Phí Nếu<br>Không Có Solar</h3>
-                <div class="value" id="totalCostWithoutSolar">0 ₫</div>
-            </div>
-            <div class="card">
-                <h3>Trung Bình<br>Tiết Kiệm/Tháng</h3>
-                <div class="value" id="avgSavings">0 ₫</div>
-            </div>
-            <div class="card">
-                <h3>Trung Bình<br>Tổng Điện Tiêu Thụ</h3>
-                <div class="value" id="avgLoad">0 kWh</div>
-            </div>
-            <div class="card">
-                <h3>Trung Bình<br>Điện Solar Sản Xuất</h3>
-                <div class="value" id="avgSolar">0 kWh</div>
-            </div>
-            <div class="card">
-                <h3>Trung Bình<br>Điện Lưới EVN</h3>
-                <div class="value" id="avgGrid">0 kWh</div>
-            </div>
-            <div class="card">
-                <h3>Trung Bình<br>Không Có Solar/Tháng</h3>
-                <div class="value" id="avgCostWithoutSolar">0 ₫</div>
+        <!-- Project Overview Section -->
+        <div class="quick-stats" id="projectOverview" style="display: block;">
+            <h2>
+                <span>📊 Tổng Quát Dự Án Solar Của Bạn</span>
+                <button class="toggle-btn" onclick="toggleProjectOverview()" id="toggleProjectOverviewBtn">🔼 Ẩn</button>
+            </h2>
+            <div class="collapsible-content expanded" id="projectOverviewContent">
+                <div class="summary-cards">
+                    <div class="card">
+                        <h3>Tổng Tiết Kiệm</h3>
+                        <div class="value" id="totalSavings">0 ₫</div>
+                    </div>
+                    <div class="card">
+                        <h3>Tổng Điện Tiêu Thụ<br>(Load)</h3>
+                        <div class="value" id="totalLoad">0 kWh</div>
+                    </div>
+                    <div class="card">
+                        <h3>Tổng Điện Solar<br>Sản Xuất</h3>
+                        <div class="value" id="totalSolar">0 kWh</div>
+                    </div>
+                    <div class="card">
+                        <h3>Tổng Điện Lưới<br>EVN (Grid)</h3>
+                        <div class="value" id="totalGrid">0 kWh</div>
+                    </div>
+                    <div class="card">
+                        <h3>Chi Phí Nếu<br>Không Có Solar</h3>
+                        <div class="value" id="totalCostWithoutSolar">0 ₫</div>
+                    </div>
+                    <div class="card">
+                        <h3>Trung Bình<br>Tiết Kiệm/Tháng</h3>
+                        <div class="value" id="avgSavings">0 ₫</div>
+                    </div>
+                    <div class="card">
+                        <h3>Trung Bình<br>Tổng Điện Tiêu Thụ</h3>
+                        <div class="value" id="avgLoad">0 kWh</div>
+                    </div>
+                    <div class="card">
+                        <h3>Trung Bình<br>Điện Solar Sản Xuất</h3>
+                        <div class="value" id="avgSolar">0 kWh</div>
+                    </div>
+                    <div class="card">
+                        <h3>Trung Bình<br>Điện Lưới EVN</h3>
+                        <div class="value" id="avgGrid">0 kWh</div>
+                    </div>
+                    <div class="card">
+                        <h3>Trung Bình<br>Không Có Solar/Tháng</h3>
+                        <div class="value" id="avgCostWithoutSolar">0 ₫</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -5103,6 +5112,60 @@
             }
         }
         // ==================== END LUMENTREE SYNC ====================
+        
+        // ==================== TOGGLE FUNCTIONS ====================
+        function toggleProjectOverview() {
+            const content = document.getElementById('projectOverviewContent');
+            const btn = document.getElementById('toggleProjectOverviewBtn');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.textContent = '🔽 Mở';
+            } else {
+                content.classList.add('expanded');
+                btn.textContent = '🔼 Ẩn';
+            }
+        }
+        
+        function toggleQuickStats() {
+            const content = document.getElementById('quickStatsContent');
+            const btn = document.getElementById('toggleQuickStatsBtn');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.textContent = '🔽 Mở';
+            } else {
+                content.classList.add('expanded');
+                btn.textContent = '🔼 Ẩn';
+            }
+        }
+        
+        function toggleMonthInputs() {
+            const content = document.getElementById('monthInputsContainer');
+            const btn = document.getElementById('toggleBtn');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.textContent = '🔽 Mở';
+            } else {
+                content.classList.add('expanded');
+                btn.textContent = '🔼 Ẩn';
+            }
+        }
+        
+        function toggleMonthDetails() {
+            const content = document.getElementById('monthDetailsContainer');
+            const btn = document.getElementById('toggleDetailsBtn');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.textContent = '🔽 Mở';
+            } else {
+                content.classList.add('expanded');
+                btn.textContent = '🔼 Ẩn';
+            }
+        }
+        // ==================== END TOGGLE FUNCTIONS ====================
     </script>
 </body>
 </html>
